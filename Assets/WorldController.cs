@@ -21,7 +21,7 @@ public class WorldController : MonoBehaviour
                 Vector3Int position = new Vector3Int(i+start.x, j+start.y, 0);
                 //tilemap.SetTile(position, defaultTile);
                 TileBase tile = tilemap.GetTile(position);
-                map[i,j] = tile != null;
+                map[i,j] = !defaultTile.Equals(tile);
                 
             }
         }
@@ -61,7 +61,7 @@ public class WorldController : MonoBehaviour
 
             float distance = Vector2Int.Distance(score, b);
             if(distance < 1){
-                count = count + (1- distance)*0.2f;
+                count = count + (1- distance);
             }
         }
 
@@ -136,10 +136,9 @@ public class WorldController : MonoBehaviour
         neighbors.Add(new Vector2Int(pos.x, pos.y + 1));
         neighbors.Add(new Vector2Int(pos.x, pos.y - 1));
 
-        // You can add diagonal neighbors for 8-connected movement if needed
-
         // Filter out positions outside the map bounds
         neighbors.RemoveAll(n => !IsWithinBounds(n));
+
         // Filter out blocked positions
         neighbors.RemoveAll(n => map[n.x-start.x, n.y-start.y]);
 
