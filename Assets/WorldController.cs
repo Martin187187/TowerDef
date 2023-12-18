@@ -2,36 +2,79 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
 
 public class WorldController : MonoBehaviour
 {
 
     public List<GameObject> enemies = new List<GameObject>();
-    public Vector2Int start = new Vector2Int(0,0);
-    public Vector2Int size = new Vector2Int(10,10);
+    public Vector2Int start = new Vector2Int(0, 0);
+    public Vector2Int size = new Vector2Int(10, 10);
     public bool[,] map;
+    public Turret[,] turrets;
+    public int[,] heatmap;
     public Tilemap tilemap;
     public TileBase defaultTile;
-    void Start ()
+    public GameObject prefabToPlace;
+
+
+    void Start()
     {
         map = new bool[size.x, size.y];
-        
-        for(int i = 0; i < size.x; i++){
-            for(int j = 0; j < size.y; j++){
-                Vector3Int position = new Vector3Int(i+start.x, j+start.y, 0);
+        heatmap = new int[size.x, size.y];
+        turrets = new Turret[size.x, size.y];
+
+        for (int i = 0; i < size.x; i++)
+        {
+            for (int j = 0; j < size.y; j++)
+            {
+                Vector3Int position = new Vector3Int(i + start.x, j + start.y, 0);
                 //tilemap.SetTile(position, defaultTile);
                 TileBase tile = tilemap.GetTile(position);
-                map[i,j] = !defaultTile.Equals(tile);
-                
+                map[i, j] = !defaultTile.Equals(tile);
+                heatmap[i, j] = 0;
+
             }
         }
-        
+
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
+        // Check for left mouse button click
+        if (Input.GetMouseButtonDown(0))
+        {
+            // Check if the main camera exists
+            if (Camera.main != null)
+            {
+                // Calculate mouse position in the world
+                Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                mousePosition.z = 0f; // Ensure z is set to 0
+
+                // Round the position to integers
+                Vector3Int roundedPosition = new Vector3Int(Mathf.RoundToInt(mousePosition.x), Mathf.RoundToInt(mousePosition.y), Mathf.RoundToInt(mousePosition.z));
+
+                Vector2Int index = new Vector2Int(roundedPosition.x - start.x, roundedPosition.y - start.y);
+
+                if (turrets[index.x, index.y] == null && map[index.x, index.y])
+                {
+                    var turretGameObject = Instantiate(prefabToPlace, roundedPosition, Quaternion.identity);
+                    Turret turret = turretGameObject.GetComponentInChildren<Turret>();
+                    turret.controller = this;
+                    turrets[index.x, index.y] = turret;
+                }
+            }
+            else
+            {
+                Debug.LogError("Main camera not found. Ensure there is a main camera in the scene.");
+            }
+        }
+    }
+
+    public Vector2Int getCellLocation(Vector3 position)
+    {
+        Vector3Int a = tilemap.WorldToCell(position);
+        return new Vector2Int(a.x, a.y);
     }
 
     public List<Vector3> FindPath(Vector3 startPos, Vector3 goalPos)
@@ -39,7 +82,7 @@ public class WorldController : MonoBehaviour
         Vector3Int a = tilemap.WorldToCell(startPos);
         Vector3Int b = tilemap.WorldToCell(goalPos);
         var res = FindPath(new Vector2Int(a.x, a.y), new Vector2Int(b.x, b.y));
-        if(res == null)
+        if (res == null)
             return new List<Vector3>();
         List<Vector3> result = new List<Vector3>();
         for (int i = 0; i < res.Count; i++)
@@ -49,19 +92,21 @@ public class WorldController : MonoBehaviour
         }
         return result;
     }
-    private float getScore(Vector2Int score){
-        
+    private float getScore(Vector2Int score)
+    {
+
         float count = 1;
         foreach (var item in enemies)
         {
-            
-            
+
+
             Vector3Int a = tilemap.WorldToCell(item.transform.position);
             Vector2Int b = new Vector2Int(a.x, a.y);
 
             float distance = Vector2Int.Distance(score, b);
-            if(distance < 1){
-                count = count + (1- distance);
+            if (distance < 1)
+            {
+                count = count + (1 - distance);
             }
         }
 
@@ -87,8 +132,9 @@ public class WorldController : MonoBehaviour
 
         gScore[startPos] = 0;
 
+        int counter = 0;
         // Main pathfinding loop
-        while (openSet.Count > 0)
+        while (openSet.Count > 0 && counter++ < 1000)
         {
             Vector2Int current = openSet.Dequeue();
 
@@ -100,7 +146,7 @@ public class WorldController : MonoBehaviour
 
             foreach (Vector2Int neighbor in GetNeighbors(current))
             {
-                float tentativeGScore = gScore[current] + getScore(neighbor); // Assuming a cost of 1 to move to a neighboring cell
+                float tentativeGScore = gScore[current] + Mathf.Max(0, heatmap[neighbor.x - start.x, neighbor.y - start.y] * 0.1f) + 1;
 
                 if (!gScore.ContainsKey(neighbor) || tentativeGScore < gScore[neighbor])
                 {
@@ -140,7 +186,7 @@ public class WorldController : MonoBehaviour
         neighbors.RemoveAll(n => !IsWithinBounds(n));
 
         // Filter out blocked positions
-        neighbors.RemoveAll(n => map[n.x-start.x, n.y-start.y]);
+        neighbors.RemoveAll(n => map[n.x - start.x, n.y - start.y]);
 
         return neighbors;
     }

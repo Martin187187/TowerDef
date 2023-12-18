@@ -25,12 +25,11 @@ public class Projectile : MonoBehaviour
         transform.Translate(targetDirection * speed * Time.deltaTime, Space.World);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter2D(Collider2D other)
 {
     if (other.CompareTag("Enemy"))
     {
-
-        // Destroy the projectile
+        other.GetComponent<QuadMovement>().Damage();
         Destroy(gameObject);
     }
 }
