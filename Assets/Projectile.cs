@@ -11,6 +11,12 @@ public class Projectile : MonoBehaviour
     public void SetTargetDirection(Vector3 direction)
     {
         targetDirection = direction.normalized;
+        if (targetDirection != Vector3.zero)
+        {
+            float angle = Mathf.Atan2(targetDirection.y, targetDirection.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, angle-90f));
+        }
+        
     }
 
     private void Start()

@@ -7,7 +7,7 @@ public class Turret : MonoBehaviour
 
     public WorldController controller;
     public float shootingInterval = 3f;
-    public float length = 3f;
+    public float range = 3f;
 
     private void Start()
     {
@@ -34,7 +34,7 @@ public class Turret : MonoBehaviour
                 float distance = Vector3.Distance(transform.position, enemy.transform.position);
 
                 // Check if this enemy is closer than the current closest
-                if (distance < closestDistance && distance < length)
+                if (distance < closestDistance && distance < range)
                 {
                     closestDistance = distance;
                     nearestEnemy = enemy;
@@ -51,7 +51,7 @@ public class Turret : MonoBehaviour
     }
     private void ShootAtTarget()
     {
-        if(target == null || Vector3.Distance(transform.position, target.position) >= length){
+        if(target == null || Vector3.Distance(transform.position, target.position) >= range){
             FindNearestEnemy();
         }
         if (target != null)
