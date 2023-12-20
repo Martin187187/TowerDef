@@ -35,7 +35,7 @@ public class Projectile : MonoBehaviour
 {
     if (other.CompareTag("Enemy"))
     {
-        other.GetComponent<QuadMovement>().Damage();
+        other.GetComponent<Enemy>().Damage();
         Destroy(gameObject);
     }
 }

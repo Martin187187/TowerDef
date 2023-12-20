@@ -18,7 +18,7 @@ public class Spawner : MonoBehaviour
     {
         // Instantiate the prefab at the current position
         var a=Instantiate(prefabToSpawn, transform.position, Quaternion.identity);
-        QuadMovement quad = a.GetComponent<QuadMovement>();
+        Enemy quad = a.GetComponent<Enemy>();
         quad.goal = goal;
         quad.controller = controller;
         controller.enemies.Add(a);

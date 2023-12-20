@@ -8,7 +8,7 @@ public class RocketProjectile : Projectile
     if (other.CompareTag("Enemy"))
     {
         Debug.Log("rocket");
-        other.GetComponent<QuadMovement>().Damage();
+        other.GetComponent<Enemy>().Damage();
         Destroy(gameObject);
     }
 }
