@@ -7,7 +7,8 @@ using UnityEngine.UIElements;
 public class WorldController : MonoBehaviour
 {
 
-    public List<GameObject> enemies = new List<GameObject>();
+    public List<Enemy> enemies = new List<Enemy>();
+    public List<Enemy> enemiesToRemove = new List<Enemy>();
     public Vector2Int start = new Vector2Int(0, 0);
     public Vector2Int size = new Vector2Int(10, 10);
     public bool[,] map;
@@ -39,6 +40,7 @@ public class WorldController : MonoBehaviour
 
     }
 
+/*
     void Update()
     {
         // Check for left mouse button click
@@ -69,6 +71,16 @@ public class WorldController : MonoBehaviour
                 Debug.LogError("Main camera not found. Ensure there is a main camera in the scene.");
             }
         }
+    }
+    */
+
+    void LateUpdate()
+    {
+        foreach (var enemy in enemiesToRemove)
+        {
+            enemies.Remove(enemy);
+        }
+        enemiesToRemove.Clear();
     }
 
     public Vector2Int getCellLocation(Vector3 position)

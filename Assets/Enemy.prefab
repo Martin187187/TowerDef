@@ -138,5 +138,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   goal: {fileID: 0}
   moveSpeed: 2
-  hp: 3
+  hp: 35
   controller: {fileID: 0}

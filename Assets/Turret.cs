@@ -1,13 +1,18 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class Turret : MonoBehaviour
 {
+    public List<HitEffect> effectList = new List<HitEffect>();
     public Transform target;
     public GameObject projectilePrefab;
 
     public WorldController controller;
     public float shootingInterval = 3f;
     public float range = 3f;
+    public int attack = 10;
+
+    public bool stayOnTarget = false;
 
     private void Start()
     {
@@ -15,44 +20,13 @@ public class Turret : MonoBehaviour
         InvokeRepeating("ShootAtTarget", 0f, shootingInterval);
     }
 
-     void FindNearestEnemy()
-    {
-        if (controller == null || controller.enemies.Count == 0)
-        {
-            // No enemies or controller is not assigned
-            return;
-        }
-
-        float closestDistance = float.MaxValue;
-        GameObject nearestEnemy = null;
-
-        // Iterate through the enemies to find the nearest one
-        foreach (var enemy in controller.enemies)
-        {
-            if (enemy != null)
-            {
-                float distance = Vector3.Distance(transform.position, enemy.transform.position);
-
-                // Check if this enemy is closer than the current closest
-                if (distance < closestDistance && distance < range)
-                {
-                    closestDistance = distance;
-                    nearestEnemy = enemy;
-                }
-            }
-        }
-
-        // Set the nearest enemy as the target
-
-        if (nearestEnemy != null)
-        {
-            target = nearestEnemy.transform;
-        }
-    }
     private void ShootAtTarget()
     {
-        if(target == null || Vector3.Distance(transform.position, target.position) >= range){
-            FindNearestEnemy();
+        if (target == null || Vector3.Distance(transform.position, target.position) >= range || !stayOnTarget)
+        {
+            Enemy enemy = Helper.FindNearestEnemy(controller.enemies, new List<Enemy>(), transform.position, range);
+            if (enemy != null)
+                target = enemy.transform;
         }
         if (target != null)
         {
@@ -64,19 +38,29 @@ public class Turret : MonoBehaviour
 
             // Instantiate and launch a projectile towards the target
             InstantiateProjectile(directionToTarget);
+
+            
         }
     }
 
     private void InstantiateProjectile(Vector3 direction)
-{
-    // Instantiate the projectile prefab
-    GameObject projectileObject = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
-    // Configure the projectile component
-    Projectile projectile = projectileObject.GetComponent<Projectile>();
-    if (projectile != null)
     {
-        // Set the projectile's direction
-        projectile.SetTargetDirection(direction);
+        // Instantiate the projectile prefab
+        GameObject projectileObject = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
+        // Configure the projectile component
+        Projectile projectile = projectileObject.GetComponent<Projectile>();
+        if (projectile != null)
+        {
+            projectile.controller = controller;
+            projectile.attack = attack;
+            // Set the projectile's direction
+            projectile.SetTargetDirection(direction);
+            
+        
+            foreach (HitEffect effect in effectList){
+                Debug.Log("add");
+                projectile.effectList.Add(effect);
+            }
+        }
     }
-}
 }

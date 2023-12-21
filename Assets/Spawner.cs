@@ -21,6 +21,6 @@ public class Spawner : MonoBehaviour
         Enemy quad = a.GetComponent<Enemy>();
         quad.goal = goal;
         quad.controller = controller;
-        controller.enemies.Add(a);
+        controller.enemies.Add(quad);
     }
 }

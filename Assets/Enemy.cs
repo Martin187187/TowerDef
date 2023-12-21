@@ -11,7 +11,7 @@ public abstract class Enemy : MonoBehaviour
     [SerializeField]
     private float moveSpeed = 2.0f; // Adjust the speed as needed
     [SerializeField]
-    private int hp = 3;
+    private int hp = 30;
     public WorldController controller;
 
     protected Vector2Int oldLocation;
@@ -66,16 +66,16 @@ public abstract class Enemy : MonoBehaviour
     }
     public void SelfDestroy()
     {
-        controller.enemies.Remove(gameObject);
+        controller.enemiesToRemove.Add(this);
         HeatMapRegistration();
         if (!firstTime)
             controller.heatmap[oldLocation.x, oldLocation.y] -= 1;
         Destroy(gameObject);
     }
 
-    public void Damage()
+    public void Damage(int damage)
     {
-        hp -= 1;
+        hp -= damage;
         if (hp < 0)
             SelfDestroy();
     }
