@@ -3,65 +3,70 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ShowTurretsU : MonoBehaviour
+public class ShowTurretsUI : MonoBehaviour
 {
-    public List<GameObject> names = new List<GameObject>();
-    public GameObject buttonPrefab;
+    public GameObject panel;
+    public GameObject buttonPrefab; // Assign your button prefab in the inspector
+    public List<Sprite> spriteList; // Add your sprites in the inspector
+    public List<GameObject> turretList; // Add your sprites in the inspector
 
-    public int fontSize = 16;
-    public float spacing = 10f;
+    public GameObject turret = null;
+
+    public float buttonSize = 50f; // Size of each button
+    public float buttonSpacing = 10f; // Spacing between buttons
 
     void Start()
     {
-        // Assuming you already have a Canvas and Panel in your scene
-        Canvas canvas = GetComponent<Canvas>();
-        Transform panelTransform = canvas.transform.Find("Panel");
+        CreatePanel();
+    }
 
-        if (panelTransform == null)
+    void CreatePanel()
+    {
+        // Calculate the total width of the buttons based on size and spacing
+        float totalWidth = spriteList.Count * buttonSize + (spriteList.Count - 1) * buttonSpacing;
+
+        // Calculate the starting position for the first button to center them
+        float startX = -totalWidth / 2f;
+
+        // Loop through the list of sprites and create buttons for each sprite
+        foreach (Sprite sprite in spriteList)
         {
-            Debug.LogError("Panel not found. Make sure you have a Panel in your Canvas.");
-            return;
-        }
-
-        RectTransform panelRect = panelTransform.GetComponent<RectTransform>();
-
-        // Get the button width and height from the prefab
-        RectTransform buttonPrefabRect = buttonPrefab.GetComponent<RectTransform>();
-        float buttonWidth = buttonPrefabRect.sizeDelta.x;
-        float buttonHeight = buttonPrefabRect.sizeDelta.y;
-
-        // Calculate the total width of the buttons and spacing
-        float totalWidth = (buttonWidth + spacing) * names.Count - spacing;
-
-        // Calculate the starting X position so that buttons grow from the middle
-        float startX = -totalWidth / 2f + buttonWidth / 2f;
-
-        // Create Buttons for each name
-        for (int i = 0; i < names.Count; i++)
-        {
-            // Calculate position based on index
-            float xPos = startX + (buttonWidth + spacing) * i;
-
-            // Create Button
-            GameObject buttonObj = Instantiate(buttonPrefab, panelTransform);
-            RectTransform buttonRect = buttonObj.GetComponent<RectTransform>();
-            buttonRect.sizeDelta = new Vector2(buttonWidth, buttonHeight);
-            buttonRect.anchoredPosition = new Vector2(xPos, 0);
-
-            // Set Button Text
-            Text buttonText = buttonObj.GetComponentInChildren<Text>();
-            buttonText.text = names[i].name;
-            buttonText.fontSize = fontSize;
-
-            // Add Click Event
-            int currentIndex = i; // Store the current index in a variable
-            Button button = buttonObj.GetComponent<Button>();
-            button.onClick.AddListener(() => ButtonClick(names[currentIndex].name));
+            CreateButton(panel, sprite, startX);
+            startX += buttonSize + buttonSpacing; // Update the starting position for the next button
         }
     }
 
-    void ButtonClick(string name)
+    void CreateButton(GameObject panel, Sprite sprite, float startX)
     {
-        Debug.Log("Button clicked for " + name);
+        // Instantiate a button prefab and set it as a child of the panel
+        GameObject button = Instantiate(buttonPrefab, panel.transform);
+
+        // Get the RectTransform of the button to set its position and size
+        RectTransform buttonRectTransform = button.GetComponent<RectTransform>();
+
+        // Set the position of the button
+        buttonRectTransform.anchoredPosition = new Vector2(startX, 0f);
+
+        // Add an Image component to the button GameObject to display the sprite
+        Image imageComponent = button.GetComponent<Image>();
+        imageComponent.sprite = sprite;
+
+        // Set the size of the button as needed
+        buttonRectTransform.sizeDelta = new Vector2(buttonSize, buttonSize);
+
+
+        // Add a listener to the button's onClick event
+        Button buttonComponent = button.GetComponent<Button>();
+        buttonComponent.onClick.AddListener(() => OnButtonClick(sprite));
+    }
+    void OnButtonClick(Sprite clickedSprite)
+    {
+        Debug.Log("Button clicked! Sprite: " + clickedSprite.name);
+        if(State.NONE == UIStateManager.state)
+        {
+            
+            UIStateManager.state = State.TURRET_PLACEMENT;
+            turret = turretList[spriteList.IndexOf(clickedSprite)];
+        }
     }
 }

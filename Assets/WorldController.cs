@@ -16,7 +16,7 @@ public class WorldController : MonoBehaviour
     public int[,] heatmap;
     public Tilemap tilemap;
     public TileBase defaultTile;
-    public GameObject prefabToPlace;
+    public ShowTurretsUI prefabToPlace;
 
 
     void Start()
@@ -40,12 +40,13 @@ public class WorldController : MonoBehaviour
 
     }
 
-/*
+
     void Update()
     {
         // Check for left mouse button click
-        if (Input.GetMouseButtonDown(0))
+        if (State.TURRET_PLACEMENT == UIStateManager.state && Input.GetMouseButtonDown(0))
         {
+            UIStateManager.state = State.NONE;
             // Check if the main camera exists
             if (Camera.main != null)
             {
@@ -60,7 +61,7 @@ public class WorldController : MonoBehaviour
 
                 if (turrets[index.x, index.y] == null && map[index.x, index.y])
                 {
-                    var turretGameObject = Instantiate(prefabToPlace, roundedPosition, Quaternion.identity);
+                    var turretGameObject = Instantiate(prefabToPlace.turret, roundedPosition, Quaternion.identity);
                     Turret turret = turretGameObject.GetComponentInChildren<Turret>();
                     turret.controller = this;
                     turrets[index.x, index.y] = turret;
@@ -72,7 +73,7 @@ public class WorldController : MonoBehaviour
             }
         }
     }
-    */
+
 
     void LateUpdate()
     {
