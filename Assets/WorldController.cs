@@ -57,7 +57,7 @@ public class WorldController : MonoBehaviour
         
             
         int amount = GameObject.FindGameObjectsWithTag("Turret").Length;
-        turretCostText.text = ((amount * amount + 1) * turretCost).ToString();
+        turretCostText.text = ((amount + 1) * turretCost).ToString();
 
     }
 
@@ -72,7 +72,7 @@ public class WorldController : MonoBehaviour
             state.SetState(State.NONE);
             
             int amount = GameObject.FindGameObjectsWithTag("Turret").Length;
-            int cost = (amount * amount + 1) * turretCost;
+            int cost = (amount + 1) * turretCost;
             // Check if the main camera exists
             if (Camera.main != null && cost <= money)
             {
@@ -92,7 +92,7 @@ public class WorldController : MonoBehaviour
                     turret.controller = this;
                     turrets[index.x, index.y] = turret;
                     SetMoney(money - cost);
-                    turretCostText.text = (((amount+1) * (amount+1) + 1) * turretCost).ToString();
+                    turretCostText.text = ((amount+2) * turretCost).ToString();
                 }
             }
         }

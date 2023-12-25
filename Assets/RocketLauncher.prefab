@@ -239,8 +239,8 @@ MonoBehaviour:
   controller: {fileID: 0}
   shootingInterval: 3
   range: 12
-  attack: 0
+  attack: 20
   shootingSpeed: 5
-  cost: 100
+  cost: 50
   stayOnTarget: 0
   upgraded: 0

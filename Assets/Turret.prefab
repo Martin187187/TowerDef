@@ -240,4 +240,7 @@ MonoBehaviour:
   shootingInterval: 0.5
   range: 3
   attack: 10
+  shootingSpeed: 5
+  cost: 50
   stayOnTarget: 0
+  upgraded: 0

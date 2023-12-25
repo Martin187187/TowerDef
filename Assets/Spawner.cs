@@ -65,7 +65,9 @@ public class Spawner : MonoBehaviour
         // Instantiate the prefab at the current position
         var a = Instantiate(prefabToSpawn, transform.position, Quaternion.identity);
         Enemy quad = a.GetComponent<Enemy>();
-        quad.hp += startingWave * 3;
+        float moveNoise = Random.Range(-0.2f, 0.2f+0.01f*startingWave);
+        quad.moveSpeed += moveNoise;
+        quad.hp += (int)(startingWave *Mathf.Log(startingWave+1, 5) * 3);
         quad.goal = goal;
         quad.controller = controller;
         controller.enemies.Add(quad);

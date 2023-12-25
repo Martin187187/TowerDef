@@ -119,7 +119,7 @@ public class DynamicUIBuilder : MonoBehaviour
         mainPanel.transform.SetParent(parentPanel, false);
         // Create the main panel
         RectTransform mainPanelRect = mainPanel.AddComponent<RectTransform>();
-        mainPanelRect.localPosition = new Vector2(0, -(buttonHeight + 5) / 2 * names.Count - 70);
+        mainPanelRect.localPosition = new Vector2(0, -(buttonHeight + 5) / 2 * names.Count - 160);
         mainPanelRect.sizeDelta = new Vector2(buttonWidth, (buttonHeight + 5) * names.Count);
         // Set up vertical layout group for the main panel
         VerticalLayoutGroup verticalLayout = mainPanel.AddComponent<VerticalLayoutGroup>();

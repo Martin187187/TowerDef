@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class ExplosionEffect : HitEffect
 {
-    public int damage = 8;
+    public float damageRatio = 0.35f;
     public float radius = 1f;
     public override bool Effect(Projectile projectile, Enemy enemy){
         
+        int damage = (int)(projectile.attack * damageRatio);
         foreach (var enemy2 in projectile.controller.enemies)
         {
             if (enemy2 != null)

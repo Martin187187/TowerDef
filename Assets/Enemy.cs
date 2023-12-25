@@ -9,7 +9,7 @@ public abstract class Enemy : MonoBehaviour
     public Transform goal;
     protected Vector3 targetPosition;
     [SerializeField]
-    private float moveSpeed = 2.0f; // Adjust the speed as needed
+    public float moveSpeed = 2.0f; // Adjust the speed as needed
     [SerializeField]
     public int hp = 30;
     public WorldController controller;
@@ -70,7 +70,6 @@ public abstract class Enemy : MonoBehaviour
     public void SelfDestroy()
     {
         controller.enemiesToRemove.Add(this);
-        controller.SetMoney(controller.GetMoney()+1);
         HeatMapRegistration();
         if (!firstTime)
             controller.heatmap[oldLocation.x, oldLocation.y] -= 1;
@@ -81,7 +80,10 @@ public abstract class Enemy : MonoBehaviour
     {
         hp -= damage;
         if (hp < 0)
+        {
+            controller.SetMoney(controller.GetMoney()+5);
             SelfDestroy();
+        }
     }
 
     void OnDrawGizmos()
