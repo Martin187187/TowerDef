@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 using UnityEngine.UIElements;
 
 public class WorldController : MonoBehaviour
@@ -17,10 +18,26 @@ public class WorldController : MonoBehaviour
     public Tilemap tilemap;
     public TileBase defaultTile;
     public ShowTurretsUI prefabToPlace;
+    private int money = 500;
+    public Text text;
+    public Text turretCostText;
 
+    public int turretCost = 100;
 
+    public UIStateManager state;
+
+    public void SetMoney(int money){
+        this.money = money;
+        text.text = money.ToString();
+    }
+
+    public int GetMoney()
+    {
+        return this.money;
+    }
     void Start()
     {
+        SetMoney(money);
         map = new bool[size.x, size.y];
         heatmap = new int[size.x, size.y];
         turrets = new Turret[size.x, size.y];
@@ -37,18 +54,27 @@ public class WorldController : MonoBehaviour
 
             }
         }
+        
+            
+        int amount = GameObject.FindGameObjectsWithTag("Turret").Length;
+        turretCostText.text = ((amount * amount + 1) * turretCost).ToString();
 
     }
+
+    
 
 
     void Update()
     {
         // Check for left mouse button click
-        if (State.TURRET_PLACEMENT == UIStateManager.state && Input.GetMouseButtonDown(0))
+        if (State.TURRET_PLACEMENT == state.GetState() && Input.GetMouseButtonDown(0))
         {
-            UIStateManager.state = State.NONE;
+            state.SetState(State.NONE);
+            
+            int amount = GameObject.FindGameObjectsWithTag("Turret").Length;
+            int cost = (amount * amount + 1) * turretCost;
             // Check if the main camera exists
-            if (Camera.main != null)
+            if (Camera.main != null && cost <= money)
             {
                 // Calculate mouse position in the world
                 Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -65,11 +91,9 @@ public class WorldController : MonoBehaviour
                     Turret turret = turretGameObject.GetComponentInChildren<Turret>();
                     turret.controller = this;
                     turrets[index.x, index.y] = turret;
+                    SetMoney(money - cost);
+                    turretCostText.text = (((amount+1) * (amount+1) + 1) * turretCost).ToString();
                 }
-            }
-            else
-            {
-                Debug.LogError("Main camera not found. Ensure there is a main camera in the scene.");
             }
         }
     }

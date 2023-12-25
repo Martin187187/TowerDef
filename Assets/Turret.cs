@@ -11,13 +11,30 @@ public class Turret : MonoBehaviour
     public float shootingInterval = 3f;
     public float range = 3f;
     public int attack = 10;
+    public float shootingSpeed = 5f;
+    public int cost = 100;
 
     public bool stayOnTarget = false;
-
-    private void Start()
+    private float timeSinceLastShot = 0.0f;
+    public int upgraded = 0;
+    void Update()
     {
-        // Start shooting coroutine
-        InvokeRepeating("ShootAtTarget", 0f, shootingInterval);
+        timeSinceLastShot += Time.deltaTime;
+
+        // Your shooting logic here
+        // Check if enough time has passed and the shots counter is within the limit
+        if (timeSinceLastShot >= shootingInterval)
+        {
+            // Reset the time since the last shot
+            timeSinceLastShot = 0.0f;
+
+            ShootAtTarget();
+        }
+    }
+
+    public int CalculateCost()
+    {
+        return cost + (int)(upgraded * cost);
     }
 
     private void ShootAtTarget()
@@ -39,7 +56,7 @@ public class Turret : MonoBehaviour
             // Instantiate and launch a projectile towards the target
             InstantiateProjectile(directionToTarget);
 
-            
+
         }
     }
 
@@ -53,12 +70,13 @@ public class Turret : MonoBehaviour
         {
             projectile.controller = controller;
             projectile.attack = attack;
+            projectile.speed = shootingSpeed;
             // Set the projectile's direction
             projectile.SetTargetDirection(direction);
-            
-        
-            foreach (HitEffect effect in effectList){
-                Debug.Log("add");
+
+
+            foreach (HitEffect effect in effectList)
+            {
                 projectile.effectList.Add(effect);
             }
         }

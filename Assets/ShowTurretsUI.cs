@@ -14,6 +14,7 @@ public class ShowTurretsUI : MonoBehaviour
 
     public float buttonSize = 50f; // Size of each button
     public float buttonSpacing = 10f; // Spacing between buttons
+    public UIStateManager state;
 
     void Start()
     {
@@ -62,10 +63,10 @@ public class ShowTurretsUI : MonoBehaviour
     void OnButtonClick(Sprite clickedSprite)
     {
         Debug.Log("Button clicked! Sprite: " + clickedSprite.name);
-        if(State.NONE == UIStateManager.state)
+        if(State.NONE == state.GetState())
         {
             
-            UIStateManager.state = State.TURRET_PLACEMENT;
+            state.SetState(State.TURRET_PLACEMENT);
             turret = turretList[spriteList.IndexOf(clickedSprite)];
         }
     }

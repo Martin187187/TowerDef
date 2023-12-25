@@ -10,9 +10,8 @@ public class PoisonEffect : Effect
         // Check if the GameObject has a parent
         if (transform.parent != null)
         {
-            
-            Debug.Log("Poison affecting the parent: " + transform.parent.name);
-            transform.parent.GetComponent<Enemy>().Damage(damage);
+            Enemy enemy = transform.parent.GetComponent<Enemy>();
+            enemy.Damage((int)(enemy.hp*0.05f));
             
         }
     }

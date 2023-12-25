@@ -10,8 +10,6 @@ public class SlowEffect : Effect
         // Check if the GameObject has a parent
         if (transform.parent != null)
         {
-            // Do something with the parent GameObject (replace this with your desired action)
-            Debug.Log("Slowly affecting the parent: " + transform.parent.name);
             
         }
     }

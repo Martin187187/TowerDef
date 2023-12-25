@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum State
 {
@@ -9,13 +10,34 @@ public enum State
 public class UIStateManager : MonoBehaviour
 {
     
-    public static State state = State.NONE;
+    private State state = State.NONE;
+    public Text stateText;
+    public Button button;
 
+
+    void Start()
+    {
+        
+        button.onClick.AddListener(() => SetState(State.NONE));
+    }
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            state = State.NONE;
+            SetState(State.NONE);
         }
     }
+
+    public void SetState(State a)
+    {
+        state = a;
+        stateText.text = a.ToString();
+    }
+
+    public State GetState()
+    {
+        return state;
+    }
+    
 }
+

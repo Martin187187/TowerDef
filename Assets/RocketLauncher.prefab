@@ -233,15 +233,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18e5cb22cb0b211429667fcb24387129, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effectList:
-  - {fileID: 8248400059827259294, guid: a63a592730390b7499eb6aed57aa2fbf, type: 3}
-  - {fileID: 5373502599808395, guid: 0a63dad6b437a7941a6f137e0fb6753b, type: 3}
-  - {fileID: 3766404633275486703, guid: 70c58325ef4a66444bf24891528ee573, type: 3}
-  - {fileID: 1187787926193262070, guid: 621de8d6a652d16448610f0d8869708b, type: 3}
+  effectList: []
   target: {fileID: 0}
   projectilePrefab: {fileID: 4150282699443370099, guid: ca567ab0c76d341418221836370b03b7, type: 3}
   controller: {fileID: 0}
   shootingInterval: 3
   range: 12
   attack: 0
+  shootingSpeed: 5
+  cost: 100
   stayOnTarget: 0
+  upgraded: 0
