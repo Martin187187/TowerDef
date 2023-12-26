@@ -241,12 +241,12 @@ MonoBehaviour:
   controller: {fileID: 0}
   shootingInterval: 0.5
   range: 3
-  attack: 10
-  shootingSpeed: 5
+  attack: 12
+  shootingSpeed: 7
   baseShootingInterval: 0.5
   baseRange: 3
-  baseAttack: 10
-  baseShootingSpeed: 5
+  baseAttack: 12
+  baseShootingSpeed: 7
   cost: 50
   stayOnTarget: 0
   strategy: 0

@@ -11,7 +11,7 @@ public class ExplosionEffect : HitEffect
         int damage = (int)(projectile.attack * damageRatio);
         foreach (var enemy2 in projectile.controller.enemies)
         {
-            if (enemy2 != null)
+            if (enemy2 != null && enemy2 != enemy)
             {
 
                 float distance = Vector3.Distance(projectile.transform.position, enemy2.transform.position);

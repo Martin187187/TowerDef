@@ -242,13 +242,13 @@ MonoBehaviour:
   target: {fileID: 0}
   projectilePrefab: {fileID: 4150282699443370099, guid: ca567ab0c76d341418221836370b03b7, type: 3}
   controller: {fileID: 0}
-  shootingInterval: 3
+  shootingInterval: 6
   range: 12
-  attack: 40
+  attack: 24
   shootingSpeed: 3
-  baseShootingInterval: 3
+  baseShootingInterval: 6
   baseRange: 12
-  baseAttack: 40
+  baseAttack: 24
   baseShootingSpeed: 3
   cost: 50
   stayOnTarget: 0
