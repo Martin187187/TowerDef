@@ -234,13 +234,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   effectList: []
+  hardcodeEffectList:
+  - {fileID: 3766404633275486703, guid: 70c58325ef4a66444bf24891528ee573, type: 3}
+  durationEffectList:
+  - {fileID: 898510758007201693, guid: 7276867c66e38d443b68613b4e481ccd, type: 3}
+  - {fileID: 8117729275917911369, guid: bd7a2f3e7a5edcd42b97b3fe9f5e0f16, type: 3}
   target: {fileID: 0}
   projectilePrefab: {fileID: 4150282699443370099, guid: ca567ab0c76d341418221836370b03b7, type: 3}
   controller: {fileID: 0}
   shootingInterval: 3
   range: 12
-  attack: 20
-  shootingSpeed: 5
+  attack: 40
+  shootingSpeed: 3
+  baseShootingInterval: 3
+  baseRange: 12
+  baseAttack: 40
+  baseShootingSpeed: 3
   cost: 50
   stayOnTarget: 0
+  strategy: 0
   upgraded: 0

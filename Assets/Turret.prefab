@@ -234,6 +234,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   effectList: []
+  hardcodeEffectList: []
+  durationEffectList: []
   target: {fileID: 0}
   projectilePrefab: {fileID: 4584815833114127999, guid: ff6967ce96339cd4490868afcba2fbaf, type: 3}
   controller: {fileID: 0}
@@ -241,6 +243,11 @@ MonoBehaviour:
   range: 3
   attack: 10
   shootingSpeed: 5
+  baseShootingInterval: 0.5
+  baseRange: 3
+  baseAttack: 10
+  baseShootingSpeed: 5
   cost: 50
   stayOnTarget: 0
+  strategy: 0
   upgraded: 0

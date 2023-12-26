@@ -14,6 +14,7 @@ public class WorldController : MonoBehaviour
     public Vector2Int size = new Vector2Int(10, 10);
     public bool[,] map;
     public Turret[,] turrets;
+    public Base basis;
     public int[,] heatmap;
     public Tilemap tilemap;
     public TileBase defaultTile;
@@ -57,11 +58,10 @@ public class WorldController : MonoBehaviour
         
             
         int amount = GameObject.FindGameObjectsWithTag("Turret").Length;
-        turretCostText.text = ((amount + 1) * turretCost).ToString();
+        turretCostText.text = (turretCost).ToString();
 
     }
 
-    
 
 
     void Update()
@@ -69,10 +69,11 @@ public class WorldController : MonoBehaviour
         // Check for left mouse button click
         if (State.TURRET_PLACEMENT == state.GetState() && Input.GetMouseButtonDown(0))
         {
+            
             state.SetState(State.NONE);
             
             int amount = GameObject.FindGameObjectsWithTag("Turret").Length;
-            int cost = (amount + 1) * turretCost;
+            int cost = turretCost;
             // Check if the main camera exists
             if (Camera.main != null && cost <= money)
             {
@@ -92,7 +93,7 @@ public class WorldController : MonoBehaviour
                     turret.controller = this;
                     turrets[index.x, index.y] = turret;
                     SetMoney(money - cost);
-                    turretCostText.text = ((amount+2) * turretCost).ToString();
+                    turretCostText.text = turretCost.ToString();
                 }
             }
         }

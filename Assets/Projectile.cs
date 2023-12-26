@@ -6,8 +6,8 @@ public class Projectile : MonoBehaviour
     public List<HitEffect> effectList = new List<HitEffect>();
 
     public List<Enemy> enemyList = new List<Enemy>();
-    private Vector3 targetDirection; // New variable to store the target direction
-
+    public Vector3 targetDirection; // New variable to store the target direction
+    public Entity goal;
     public float speed = 5f;
     public float lifetime = 3f;
     public int attack = 10;

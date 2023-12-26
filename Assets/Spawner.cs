@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class Spawner : MonoBehaviour
 {
     public GameObject prefabToSpawn;
-    public Transform goal;
+    public Base goal;
 
     public WorldController controller;
     public float spawnInterval = 2f;
@@ -68,6 +68,7 @@ public class Spawner : MonoBehaviour
         float moveNoise = Random.Range(-0.2f, 0.2f+0.01f*startingWave);
         quad.moveSpeed += moveNoise;
         quad.hp += (int)(startingWave *Mathf.Log(startingWave+1, 5) * 3);
+        quad.startHp = quad.hp;
         quad.goal = goal;
         quad.controller = controller;
         controller.enemies.Add(quad);

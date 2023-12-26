@@ -2,16 +2,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public abstract class Enemy : MonoBehaviour
+public abstract class Enemy : Entity
 {
 
     protected List<Vector3> path = new List<Vector3>();
-    public Transform goal;
+    public Base goal;
     protected Vector3 targetPosition;
     [SerializeField]
     public float moveSpeed = 2.0f; // Adjust the speed as needed
-    [SerializeField]
-    public int hp = 30;
     public WorldController controller;
 
     protected Vector2Int oldLocation;
@@ -37,7 +35,7 @@ public abstract class Enemy : MonoBehaviour
     
     protected void SetNewTargetPosition()
     {
-        path = controller.FindPath(transform.position, goal.position);
+        path = controller.FindPath(transform.position, goal.transform.position);
 
         if (path != null && path.Count > 0)
         {
@@ -81,7 +79,7 @@ public abstract class Enemy : MonoBehaviour
         hp -= damage;
         if (hp < 0)
         {
-            controller.SetMoney(controller.GetMoney()+5);
+            controller.SetMoney(controller.GetMoney()+10);
             SelfDestroy();
         }
     }

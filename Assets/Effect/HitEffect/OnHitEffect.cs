@@ -11,6 +11,7 @@ public class OnHitEffect : HitEffect
         if(enemy2 != null){
             
             Vector3 directionToTarget = enemy2.transform.position - projectile.transform.position;
+            projectile.goal = enemy2;
             projectile.SetTargetDirection(directionToTarget);
             return true;
         }

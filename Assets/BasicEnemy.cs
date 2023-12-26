@@ -8,8 +8,9 @@ public class BasicEnemy : Enemy
     {
         if (goal == null)
             return;
-        if (Vector3.Distance(transform.position, goal.position) < 1f)
+        if (Vector3.Distance(transform.position, goal.transform.position) < 1f)
         {
+            goal.Damage();
             SelfDestroy();
             return;
         }
