@@ -59,7 +59,7 @@ public class DynamicUIBuilder : MonoBehaviour
         int money = targetTurret.controller.GetMoney();
         if (cost <= money)
         {
-            targetTurret.controller.SetMoney(money-cost);
+            targetTurret.controller.SetMoney(money - cost);
             targetTurret.upgraded++;
             targetTurret.shootingSpeed++;
             ssText.text = "" + targetTurret.shootingSpeed;
@@ -74,9 +74,9 @@ public class DynamicUIBuilder : MonoBehaviour
         int money = targetTurret.controller.GetMoney();
         if (cost <= money)
         {
-            targetTurret.controller.SetMoney(money-cost);
+            targetTurret.controller.SetMoney(money - cost);
             targetTurret.upgraded++;
-            targetTurret.range+=targetTurret.baseRange*0.2f;
+            targetTurret.range += targetTurret.baseRange * 0.2f;
             rangeText.text = "" + targetTurret.range;
             setNames();
         }
@@ -89,9 +89,9 @@ public class DynamicUIBuilder : MonoBehaviour
         int money = targetTurret.controller.GetMoney();
         if (cost <= money)
         {
-            targetTurret.controller.SetMoney(money-cost);
+            targetTurret.controller.SetMoney(money - cost);
             targetTurret.upgraded++;
-            targetTurret.shootingInterval *= 0.9f;
+            targetTurret.shootingInterval *= 0.95f;
             asText.text = "" + targetTurret.shootingInterval;
             setNames();
         }
@@ -104,9 +104,9 @@ public class DynamicUIBuilder : MonoBehaviour
         int money = targetTurret.controller.GetMoney();
         if (cost <= money)
         {
-            targetTurret.controller.SetMoney(money-cost);
+            targetTurret.controller.SetMoney(money - cost);
             targetTurret.upgraded++;
-            targetTurret.attack+=(int)(targetTurret.baseAttack*0.5);
+            targetTurret.attack += (int)(targetTurret.baseAttack * 0.5);
             attackText.text = "" + targetTurret.attack;
             setNames();
         }
@@ -188,8 +188,10 @@ public class DynamicUIBuilder : MonoBehaviour
                     asText.text = "" + turret.shootingInterval;
                     ssText.text = "" + turret.shootingSpeed;
                     rangeText.text = "" + turret.range;
+                    dropdown.value = (int)targetTurret.strategy;
                 }
             }
+
         }
         else if (State.TURRET_INSPECTOR != state.GetState())
         {

@@ -8,7 +8,7 @@ public class TransferEffect : HitEffect
 
         foreach (Transform child in enemy.transform)
         {
-            if (child.gameObject.GetComponent<PoisonEffect>() != null)
+            if (effectPrefab.GetComponent<PoisonEffect>() != null && child.gameObject.GetComponent<PoisonEffect>() != null)
             {
                 return false;
             }

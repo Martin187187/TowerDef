@@ -79,7 +79,7 @@ public abstract class Enemy : Entity
         hp -= damage;
         if (hp < 0)
         {
-            controller.SetMoney(controller.GetMoney()+10);
+            controller.SetMoney(controller.GetMoney()+5);
             SelfDestroy();
         }
     }

@@ -6,11 +6,12 @@ using UnityEngine.UI;
 public class Lifebar : MonoBehaviour
 {
     public Slider lifeBarSlider;
-    private Entity entity;
+    public Entity entity;
 
     void Start()
     {
-        entity = transform.parent.GetComponent<Entity>();
+        if(entity==null)
+            entity = transform.parent.GetComponent<Entity>();
     }
 
     void Update()

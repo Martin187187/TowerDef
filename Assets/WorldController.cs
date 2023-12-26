@@ -19,7 +19,7 @@ public class WorldController : MonoBehaviour
     public Tilemap tilemap;
     public TileBase defaultTile;
     public ShowTurretsUI prefabToPlace;
-    private int money = 500;
+    public int money = 600;
     public Text text;
     public Text turretCostText;
 
@@ -73,7 +73,7 @@ public class WorldController : MonoBehaviour
             state.SetState(State.NONE);
             
             int amount = GameObject.FindGameObjectsWithTag("Turret").Length;
-            int cost = turretCost;
+            int cost = (int)(amount * turretCost * 0.5f) + turretCost;
             // Check if the main camera exists
             if (Camera.main != null && cost <= money)
             {
@@ -93,7 +93,7 @@ public class WorldController : MonoBehaviour
                     turret.controller = this;
                     turrets[index.x, index.y] = turret;
                     SetMoney(money - cost);
-                    turretCostText.text = turretCost.ToString();
+                    turretCostText.text = ((int)((amount+1) * turretCost * 0.5f+turretCost)).ToString();
                 }
             }
         }
@@ -184,7 +184,7 @@ public class WorldController : MonoBehaviour
 
             foreach (Vector2Int neighbor in GetNeighbors(current))
             {
-                float tentativeGScore = gScore[current] + Mathf.Max(0, heatmap[neighbor.x - start.x, neighbor.y - start.y] * 0.1f) + 1;
+                float tentativeGScore = gScore[current] + Mathf.Max(0, heatmap[neighbor.x - start.x, neighbor.y - start.y] * 0.5f) + 1;
 
                 if (!gScore.ContainsKey(neighbor) || tentativeGScore < gScore[neighbor])
                 {
