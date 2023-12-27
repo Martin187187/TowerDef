@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b20a71663aaaa14cb134dcfda2197fe, type: 3}
   m_Name: RocketLauncher
   m_EditorClassIdentifier: 
-  attackDamage: 16
+  attackDamage: 24
   shootingInterval: 4
-  shootingSpeed: 3
+  shootingSpeed: 1
   attackRange: 12

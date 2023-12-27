@@ -16,12 +16,19 @@ public class Projectile : MonoBehaviour
     public void SetTargetDirection(Vector3 direction)
     {
         targetDirection = direction.normalized;
+
         if (targetDirection != Vector3.zero)
         {
-            float angle = Mathf.Atan2(targetDirection.y, targetDirection.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, angle - 90f));
-        }
+            // Calculate the rotation to align the forward direction with the target direction
+            Quaternion targetRotation = Quaternion.LookRotation(targetDirection, Vector3.down);
 
+            // Apply a 90-degree rotation around the X-axis
+            Quaternion xRotation = Quaternion.Euler(90f, 0f, 0f);
+            targetRotation *= xRotation;
+
+            // Set the rotation of the projectile
+            transform.rotation = targetRotation;
+        }
     }
 
     private void Start()
@@ -36,19 +43,20 @@ public class Projectile : MonoBehaviour
         transform.Translate(targetDirection * speed * Time.deltaTime, Space.World);
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Enemy"))
         {
             Enemy enemy = other.gameObject.GetComponent<Enemy>();
 
-            if(!enemyList.Contains(enemy)){
+            if (!enemyList.Contains(enemy))
+            {
                 enemyList.Add(enemy);
                 bool keepalive = false;
                 foreach (HitEffect effect in effectList)
                     keepalive |= effect.Effect(this, enemy);
                 enemy.Damage(attack);
-                if(!keepalive)
+                if (!keepalive)
                     Destroy(gameObject);
             }
         }

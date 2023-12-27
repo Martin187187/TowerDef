@@ -5,10 +5,12 @@ using UnityEngine;
 public class FollowEffect : Effect
 {
     public float maxAngle = 1.0f;
+    
     protected override void EffectParent()
     {
         Projectile projectile = transform.parent.GetComponent<Projectile>();
 
+        
         if (projectile != null && projectile.goal)
         {
             Debug.Log("test");
@@ -16,26 +18,24 @@ public class FollowEffect : Effect
             Vector3 currentPosition = projectile.transform.position;
             Vector3 target = projectile.goal.transform.position;
 
-            // Calculate the target direction in 2D
-            Vector2 targetDirection = (target - currentPosition).normalized;
+            // Calculate the target direction in 3D
+            Vector3 targetDirection = (target - currentPosition).normalized;
 
-            // Calculate the angle of the target direction in degrees
-            float targetAngle = Mathf.Atan2(targetDirection.y, targetDirection.x) * Mathf.Rad2Deg;
+            // Calculate the rotation quaternion to rotate the current direction towards the target direction
+            Quaternion targetRotation = Quaternion.LookRotation(targetDirection, Vector3.forward);
 
-            // Calculate the angle of the current direction in degrees
-            float currentAngle = Mathf.Atan2(currentDirection.y, currentDirection.x) * Mathf.Rad2Deg;
+            // Smoothly interpolate the current rotation towards the target rotation
+            Quaternion newRotation = Quaternion.RotateTowards(Quaternion.LookRotation(currentDirection, Vector3.forward), targetRotation, maxAngle);
 
-            // Constrain the new angle to be within 1 degree of the current angle
-            float newAngle = Mathf.MoveTowardsAngle(currentAngle, targetAngle, maxAngle);
-
-            // Convert the new angle back to a Vector2 direction
-            Vector2 newDirection = new Vector2(Mathf.Cos(newAngle * Mathf.Deg2Rad), Mathf.Sin(newAngle * Mathf.Deg2Rad));
+            // Extract the new direction from the new rotation
+            Vector3 newDirection = newRotation * Vector3.forward;
 
             // Use the newDirection for further calculations or assignments
             // For example, you might want to normalize it if needed:
             newDirection.Normalize();
-            projectile.SetTargetDirection(newDirection);
 
+            // Set the new direction for the projectile
+            projectile.SetTargetDirection(newDirection);
             projectile.targetDirection = newDirection;
         }
     }

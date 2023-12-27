@@ -27,7 +27,10 @@ public class WorldController : MonoBehaviour
 
     public UIStateManager state;
 
-    public void SetMoney(int money){
+    public GameObject prefab;
+
+    public void SetMoney(int money)
+    {
         this.money = money;
         text.text = money.ToString();
     }
@@ -51,12 +54,16 @@ public class WorldController : MonoBehaviour
                 //tilemap.SetTile(position, defaultTile);
                 TileBase tile = tilemap.GetTile(position);
                 map[i, j] = !defaultTile.Equals(tile);
+                if (!defaultTile.Equals(tile))
+                {
+                    Instantiate(prefab, new Vector3(i + start.x, j + start.y, -0.15f), Quaternion.identity);
+                }
                 heatmap[i, j] = 0;
 
             }
         }
-        
-            
+
+
         int amount = GameObject.FindGameObjectsWithTag("Turret").Length;
         turretCostText.text = (turretCost).ToString();
 
@@ -66,34 +73,48 @@ public class WorldController : MonoBehaviour
 
     void Update()
     {
+
         // Check for left mouse button click
         if (State.TURRET_PLACEMENT == state.GetState() && Input.GetMouseButtonDown(0))
         {
-            
+
             state.SetState(State.NONE);
-            
+
             int amount = GameObject.FindGameObjectsWithTag("Turret").Length;
             int cost = (int)(amount * turretCost * 0.5f) + turretCost;
             // Check if the main camera exists
             if (Camera.main != null && cost <= money)
             {
-                // Calculate mouse position in the world
-                Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                mousePosition.z = 0f; // Ensure z is set to 0
 
-                // Round the position to integers
-                Vector3Int roundedPosition = new Vector3Int(Mathf.RoundToInt(mousePosition.x), Mathf.RoundToInt(mousePosition.y), Mathf.RoundToInt(mousePosition.z));
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-                Vector2Int index = new Vector2Int(roundedPosition.x - start.x, roundedPosition.y - start.y);
+                // Define the plane where z = 0 or z = 1
+                Plane plane = new Plane(Vector3.forward, 0.4f); // Z = 0 plane
 
-                if (turrets[index.x, index.y] == null && map[index.x, index.y])
+                // Check if the ray intersects with the plane
+                if (plane.Raycast(ray, out float distance))
                 {
-                    var turretGameObject = Instantiate(prefabToPlace.turret, roundedPosition, Quaternion.identity);
-                    Turret turret = turretGameObject.GetComponentInChildren<Turret>();
-                    turret.controller = this;
-                    turrets[index.x, index.y] = turret;
-                    SetMoney(money - cost);
-                    turretCostText.text = ((int)((amount+1) * turretCost * 0.5f+turretCost)).ToString();
+                    // Get the intersection point
+                    Vector3 mousePosition = ray.GetPoint(distance);
+
+                    // Do something with the intersection point (e.g., visualize it or perform actions)
+                    Debug.DrawRay(ray.origin, ray.direction * distance, Color.green);
+                    Debug.Log("Intersection Point: " + mousePosition);
+
+                    // Round the position to integers
+                    Vector3Int roundedPosition = new Vector3Int(Mathf.RoundToInt(mousePosition.x), Mathf.RoundToInt(mousePosition.y), 0);
+
+                    Vector2Int index = new Vector2Int(roundedPosition.x - start.x, roundedPosition.y - start.y);
+
+                    if (turrets[index.x, index.y] == null && map[index.x, index.y])
+                    {
+                        var turretGameObject = Instantiate(prefabToPlace.turret, new Vector3(roundedPosition.x, roundedPosition.y, mousePosition.z), Quaternion.identity);
+                        Turret turret = turretGameObject.GetComponentInChildren<Turret>();
+                        turret.controller = this;
+                        turrets[index.x, index.y] = turret;
+                        SetMoney(money - cost);
+                        turretCostText.text = ((int)((amount + 1) * turretCost * 0.5f + turretCost)).ToString();
+                    }
                 }
             }
         }

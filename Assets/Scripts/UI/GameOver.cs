@@ -16,6 +16,6 @@ public class GameOver : MonoBehaviour
 
         Debug.Log("Received Parameter: " + receivedParameter);
         text.text = receivedParameter.ToString();
-        button.onClick.AddListener(()=> SceneManager.LoadScene("MainScene"));
+        button.onClick.AddListener(()=> SceneManager.LoadScene("MainScene3D"));
     }
 }

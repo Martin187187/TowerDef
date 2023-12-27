@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class Turret : MonoBehaviour
 {
-    public enum TargetStrategy 
+    public enum TargetStrategy
     {
         NEAREST_TO_TURRET, NEAREST_TO_GOAL, LOWEST_HP, HIGHEST_HP
     }
@@ -18,7 +18,7 @@ public class Turret : MonoBehaviour
     [SerializeField] public float range;
     [SerializeField] public int attack;
     [SerializeField] public float shootingSpeed;
-    
+
     public TurretData turretData;
     public int cost = 100;
 
@@ -30,6 +30,8 @@ public class Turret : MonoBehaviour
 
     void Awake()
     {
+
+        transform.parent.rotation = Quaternion.Euler(new Vector3(180, 0, 0));
         shootingInterval = turretData.shootingInterval;
         range = turretData.attackRange;
         attack = turretData.attackDamage;
@@ -82,9 +84,14 @@ public class Turret : MonoBehaviour
         {
             // Calculate direction to the target
             Vector3 directionToTarget = target.transform.position - transform.position;
+            if(projectilePrefab.GetComponent<RocketProjectile>() !=null)
+                directionToTarget = Vector3.back;
 
-            // Rotate turret to face the target
-            transform.rotation = Quaternion.LookRotation(Vector3.forward, directionToTarget);
+            // Calculate the angle in degrees
+            float angle = Mathf.Atan2(directionToTarget.y, directionToTarget.x) * Mathf.Rad2Deg;
+
+            // Rotate turret around the Z-axis only
+            transform.localRotation = Quaternion.Euler(0f, 0f, -angle+90);
 
             // Instantiate and launch a projectile towards the target
             InstantiateProjectile(directionToTarget);

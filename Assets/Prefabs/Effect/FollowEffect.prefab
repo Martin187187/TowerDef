@@ -46,4 +46,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   selfDestructTime: 10
   effectParentInterval: 0.025
-  maxAngle: 1
+  maxAngle: 2

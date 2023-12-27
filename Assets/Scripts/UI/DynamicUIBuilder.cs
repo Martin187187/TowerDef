@@ -166,22 +166,30 @@ public class DynamicUIBuilder : MonoBehaviour
         // Check if the left mouse button is pressed
         if (State.NONE == state.GetState() && Input.GetMouseButtonDown(0))
         {
-            // Get the mouse position in world coordinates
-            Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            // Get the mouse position in screen coordinates
+            Vector3 mousePosition = Input.mousePosition;
 
-            // Perform a 2D raycast from the mouse position
-            RaycastHit2D hit = Physics2D.Raycast(mousePosition, Vector2.zero);
+            // Perform a raycast from the mouse position into the scene
+            Ray ray = Camera.main.ScreenPointToRay(mousePosition);
+            RaycastHit hit;
 
-            // Check if the ray hit something
-            if (hit.collider != null)
+            // Check if the ray hits something
+            if (Physics.Raycast(ray, out hit))
             {
                 // Check if the hit object has the "Turret" tag
                 if (hit.collider.CompareTag("Turret"))
                 {
+                    Debug.Log("dhn");
                     mainPanel.SetActive(true);
                     statsPanel.SetActive(true);
                     state.SetState(State.TURRET_INSPECTOR);
+
+                    // Assuming Turret script is attached to the same GameObject as the collider
                     Turret turret = hit.collider.GetComponentInChildren<Turret>();
+
+                    // If Turret script is on a child GameObject, you might need to use GetComponentInChildren
+                    // Turret turret = hit.collider.GetComponentInChildren<Turret>();
+
                     targetTurret = turret;
                     Recalculate();
                     attackText.text = "" + turret.attack;
@@ -191,7 +199,6 @@ public class DynamicUIBuilder : MonoBehaviour
                     dropdown.value = (int)targetTurret.strategy;
                 }
             }
-
         }
         else if (State.TURRET_INSPECTOR != state.GetState())
         {
