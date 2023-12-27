@@ -14,14 +14,12 @@ public class Turret : MonoBehaviour
     public GameObject projectilePrefab;
 
     public WorldController controller;
-    public float shootingInterval = 3f;
-    public float range = 3f;
-    public int attack = 10;
-    public float shootingSpeed = 5f;
-    public float baseShootingInterval = 3f;
-    public float baseRange = 3f;
-    public int baseAttack = 10;
-    public float baseShootingSpeed = 5f;
+    [SerializeField] public float shootingInterval;
+    [SerializeField] public float range;
+    [SerializeField] public int attack;
+    [SerializeField] public float shootingSpeed;
+    
+    public TurretData turretData;
     public int cost = 100;
 
     public bool stayOnTarget = false;
@@ -29,6 +27,14 @@ public class Turret : MonoBehaviour
     public TargetStrategy strategy;
     private float timeSinceLastShot = 0.0f;
     public int upgraded = 0;
+
+    void Awake()
+    {
+        shootingInterval = turretData.shootingInterval;
+        range = turretData.attackRange;
+        attack = turretData.attackDamage;
+        shootingSpeed = turretData.shootingSpeed;
+    }
     void Update()
     {
         timeSinceLastShot += Time.deltaTime;

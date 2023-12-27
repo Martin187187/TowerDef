@@ -246,10 +246,7 @@ MonoBehaviour:
   range: 12
   attack: 24
   shootingSpeed: 3
-  baseShootingInterval: 4
-  baseRange: 12
-  baseAttack: 24
-  baseShootingSpeed: 3
+  turretData: {fileID: 11400000, guid: 83d545f0562cabf429813ff23343b044, type: 2}
   cost: 50
   stayOnTarget: 0
   strategy: 0

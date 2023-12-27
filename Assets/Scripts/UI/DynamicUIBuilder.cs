@@ -76,7 +76,7 @@ public class DynamicUIBuilder : MonoBehaviour
         {
             targetTurret.controller.SetMoney(money - cost);
             targetTurret.upgraded++;
-            targetTurret.range += targetTurret.baseRange * 0.2f;
+            targetTurret.range += targetTurret.turretData.attackRange * 0.2f;
             rangeText.text = "" + targetTurret.range;
             setNames();
         }
@@ -106,7 +106,7 @@ public class DynamicUIBuilder : MonoBehaviour
         {
             targetTurret.controller.SetMoney(money - cost);
             targetTurret.upgraded++;
-            targetTurret.attack += (int)(targetTurret.baseAttack * 0.5);
+            targetTurret.attack += (int)(targetTurret.turretData.attackDamage * 0.5);
             attackText.text = "" + targetTurret.attack;
             setNames();
         }

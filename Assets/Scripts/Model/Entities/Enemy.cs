@@ -10,13 +10,16 @@ public abstract class Enemy : Entity
     protected Vector3 targetPosition;
     [SerializeField]
     public float moveSpeed = 2.0f; // Adjust the speed as needed
+    public EnemyData enemyData;
     public WorldController controller;
 
     protected Vector2Int oldLocation;
     protected bool firstTime = true;
 
-    void Start()
+    void Awake()
     {
+        hp = startHp = enemyData.health;
+        moveSpeed = enemyData.movementSpeed;
         targetPosition = transform.position;
     }
     void Update()

@@ -141,6 +141,7 @@ MonoBehaviour:
   startHp: 30
   goal: {fileID: 0}
   moveSpeed: 2
+  enemyData: {fileID: 11400000, guid: c58a38a0e2d52a344874e177d05f90b1, type: 2}
   controller: {fileID: 0}
 --- !u!1001 &5866410620203977639
 PrefabInstance:

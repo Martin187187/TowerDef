@@ -93,7 +93,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: da234bc0e6afbfc4687a0f562cac557f, type: 2}
   m_LightingSettings: {fileID: 0}
 --- !u!196 &4
 NavMeshSettings:
@@ -5335,7 +5335,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 565957640}
   m_Direction: 2
   m_Value: 1.000003
-  m_Size: 0.727
+  m_Size: 0.72699994
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
