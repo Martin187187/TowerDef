@@ -28,6 +28,7 @@ public class BasicEnemy : Enemy
 
         if (Vector3.Distance(transform.position, targetPosition) < 0.1f)
         {
+            Debug.Log("here");
             SetNewTargetPosition();
         }
     }

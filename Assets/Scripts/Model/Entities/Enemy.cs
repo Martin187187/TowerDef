@@ -42,7 +42,8 @@ public abstract class Enemy : Entity
 
         if (path != null && path.Count > 0)
         {
-            targetPosition = new Vector3(path[0].x, path[0].y, 0);
+            Debug.Log(targetPosition);
+            targetPosition = new Vector3(path[0].x, 0, path[0].z);
         }
 
     }

@@ -5,6 +5,8 @@ public class TransferEffect : HitEffect
     public GameObject effectPrefab;
     public override bool Effect(Projectile projectile, Enemy enemy)
     {
+        if(enemy == null)
+            return false;
 
         foreach (Transform child in enemy.transform)
         {

@@ -31,7 +31,7 @@ public class Turret : MonoBehaviour
     void Awake()
     {
 
-        transform.parent.rotation = Quaternion.Euler(new Vector3(180, 0, 0));
+        transform.parent.rotation = Quaternion.Euler(new Vector3(-90, 0, 0));
         shootingInterval = turretData.shootingInterval;
         range = turretData.attackRange;
         attack = turretData.attackDamage;
@@ -85,10 +85,10 @@ public class Turret : MonoBehaviour
             // Calculate direction to the target
             Vector3 directionToTarget = target.transform.position - transform.position;
             if(projectilePrefab.GetComponent<RocketProjectile>() !=null)
-                directionToTarget = Vector3.back;
+                directionToTarget = Vector3.up;
 
             // Calculate the angle in degrees
-            float angle = Mathf.Atan2(directionToTarget.y, directionToTarget.x) * Mathf.Rad2Deg;
+            float angle = Mathf.Atan2(directionToTarget.z, directionToTarget.x) * Mathf.Rad2Deg;
 
             // Rotate turret around the Z-axis only
             transform.localRotation = Quaternion.Euler(0f, 0f, -angle+90);

@@ -108,6 +108,7 @@ MonoBehaviour:
   speed: 5
   lifetime: 3
   attack: 10
+  explodePrefab: {fileID: 100004, guid: bd5a7ae3e8bd4c8499f69e8e45138021, type: 3}
 --- !u!54 &-2497543864258678185
 Rigidbody:
   m_ObjectHideFlags: 0

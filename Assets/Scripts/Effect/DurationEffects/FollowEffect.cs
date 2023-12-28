@@ -5,27 +5,33 @@ using UnityEngine;
 public class FollowEffect : Effect
 {
     public float maxAngle = 1.0f;
+    private Vector3 lastGoal = Vector3.zero;
     
     protected override void EffectParent()
     {
         Projectile projectile = transform.parent.GetComponent<Projectile>();
-
         
-        if (projectile != null && projectile.goal)
+        Vector3 target = projectile.goal ? projectile.goal.transform.position : lastGoal;
+        
+        if (projectile != null && target != Vector3.zero)
         {
-            Debug.Log("test");
+            lastGoal = target;
+            
             Vector3 currentDirection = projectile.targetDirection;
             Vector3 currentPosition = projectile.transform.position;
-            Vector3 target = projectile.goal.transform.position;
 
+            if(Vector3.Distance(currentPosition, target) < 0.1f || currentPosition.y < 0){
+                projectile.Hit(null);
+                return;
+            }
             // Calculate the target direction in 3D
             Vector3 targetDirection = (target - currentPosition).normalized;
 
             // Calculate the rotation quaternion to rotate the current direction towards the target direction
-            Quaternion targetRotation = Quaternion.LookRotation(targetDirection, Vector3.forward);
+            Quaternion targetRotation = Quaternion.LookRotation(targetDirection, Vector3.up);
 
             // Smoothly interpolate the current rotation towards the target rotation
-            Quaternion newRotation = Quaternion.RotateTowards(Quaternion.LookRotation(currentDirection, Vector3.forward), targetRotation, maxAngle);
+            Quaternion newRotation = Quaternion.RotateTowards(Quaternion.LookRotation(currentDirection, Vector3.up), targetRotation, maxAngle);
 
             // Extract the new direction from the new rotation
             Vector3 newDirection = newRotation * Vector3.forward;

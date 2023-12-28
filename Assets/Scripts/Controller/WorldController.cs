@@ -56,7 +56,7 @@ public class WorldController : MonoBehaviour
                 map[i, j] = !defaultTile.Equals(tile);
                 if (!defaultTile.Equals(tile))
                 {
-                    Instantiate(prefab, new Vector3(i + start.x, j + start.y, -0.15f), Quaternion.identity);
+                    Instantiate(prefab, new Vector3(i + start.x, 0.15f, j + start.y), Quaternion.identity);
                 }
                 heatmap[i, j] = 0;
 
@@ -89,7 +89,7 @@ public class WorldController : MonoBehaviour
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
                 // Define the plane where z = 0 or z = 1
-                Plane plane = new Plane(Vector3.forward, 0.4f); // Z = 0 plane
+                Plane plane = new Plane(Vector3.up, -0.4f); // Z = 0 plane
 
                 // Check if the ray intersects with the plane
                 if (plane.Raycast(ray, out float distance))
@@ -102,13 +102,13 @@ public class WorldController : MonoBehaviour
                     Debug.Log("Intersection Point: " + mousePosition);
 
                     // Round the position to integers
-                    Vector3Int roundedPosition = new Vector3Int(Mathf.RoundToInt(mousePosition.x), Mathf.RoundToInt(mousePosition.y), 0);
+                    Vector3Int roundedPosition = new Vector3Int(Mathf.RoundToInt(mousePosition.x), 0, Mathf.RoundToInt(mousePosition.z));
 
-                    Vector2Int index = new Vector2Int(roundedPosition.x - start.x, roundedPosition.y - start.y);
+                    Vector2Int index = new Vector2Int(roundedPosition.x - start.x, roundedPosition.z - start.y);
 
                     if (turrets[index.x, index.y] == null && map[index.x, index.y])
                     {
-                        var turretGameObject = Instantiate(prefabToPlace.turret, new Vector3(roundedPosition.x, roundedPosition.y, mousePosition.z), Quaternion.identity);
+                        var turretGameObject = Instantiate(prefabToPlace.turret, new Vector3(roundedPosition.x, mousePosition.y, roundedPosition.z), Quaternion.identity);
                         Turret turret = turretGameObject.GetComponentInChildren<Turret>();
                         turret.controller = this;
                         turrets[index.x, index.y] = turret;
@@ -132,22 +132,23 @@ public class WorldController : MonoBehaviour
 
     public Vector2Int getCellLocation(Vector3 position)
     {
-        Vector3Int a = tilemap.WorldToCell(position);
-        return new Vector2Int(a.x, a.y);
+        
+        return new Vector2Int((int)position.x, (int)position.z);
     }
 
     public List<Vector3> FindPath(Vector3 startPos, Vector3 goalPos)
     {
-        Vector3Int a = tilemap.WorldToCell(startPos);
-        Vector3Int b = tilemap.WorldToCell(goalPos);
-        var res = FindPath(new Vector2Int(a.x, a.y), new Vector2Int(b.x, b.y));
+        Vector2Int a = getCellLocation(startPos);
+        Vector2Int b = getCellLocation(goalPos);
+        
+        var res = FindPath(a, b);
         if (res == null)
             return new List<Vector3>();
         List<Vector3> result = new List<Vector3>();
         for (int i = 0; i < res.Count; i++)
         {
             Vector2Int pos = res[i];
-            result.Add(tilemap.CellToWorld(new Vector3Int(pos.x, pos.y, 0)));
+            result.Add(new Vector3Int(pos.x, 0, pos.y));
         }
         return result;
     }

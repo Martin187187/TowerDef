@@ -11,6 +11,7 @@ public class Projectile : MonoBehaviour
     public float speed = 5f;
     public float lifetime = 3f;
     public int attack = 10;
+    public GameObject explodePrefab;
 
     // Set the target direction when the projectile is instantiated
     public void SetTargetDirection(Vector3 direction)
@@ -33,7 +34,6 @@ public class Projectile : MonoBehaviour
 
     private void Start()
     {
-        // Automatically destroy the projectile after the specified lifetime
         Destroy(gameObject, lifetime);
     }
 
@@ -43,22 +43,42 @@ public class Projectile : MonoBehaviour
         transform.Translate(targetDirection * speed * Time.deltaTime, Space.World);
     }
 
+    public void DestroyProjectile()
+    {
+        Destroy(gameObject);
+        if(explodePrefab)
+            Instantiate(explodePrefab, transform.position, Quaternion.identity);
+    }
+
+    public void Hit(Enemy enemy)
+    {
+        if (enemy == null)
+        {
+            foreach (HitEffect effect in effectList)
+                effect.Effect(this, enemy);
+            DestroyProjectile();
+        }
+        else if (!enemyList.Contains(enemy))
+        {
+            enemyList.Add(enemy);
+            bool keepalive = false;
+            foreach (HitEffect effect in effectList)
+                keepalive |= effect.Effect(this, enemy);
+            enemy.Damage(attack);
+            if (!keepalive)
+                DestroyProjectile();
+            else if(explodePrefab)
+                Instantiate(explodePrefab, transform.position, Quaternion.identity);
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Enemy"))
         {
             Enemy enemy = other.gameObject.GetComponent<Enemy>();
 
-            if (!enemyList.Contains(enemy))
-            {
-                enemyList.Add(enemy);
-                bool keepalive = false;
-                foreach (HitEffect effect in effectList)
-                    keepalive |= effect.Effect(this, enemy);
-                enemy.Damage(attack);
-                if (!keepalive)
-                    Destroy(gameObject);
-            }
+            Hit(enemy);
         }
     }
 }
