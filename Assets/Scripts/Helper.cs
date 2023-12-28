@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class Helper
 {
+    private static Vector2Int boundary = new Vector2Int(12, 6);
+
+    private static bool checkIfInBoundary(Vector3 position)
+    {
+        return position.x >= -boundary.x-0.5f && position.x < boundary.x &&
+        position.y >= -boundary.y-0.5f && position.y < boundary.y;
+    }
     public static Enemy FindNearestEnemy(List<Enemy> enemyList, List<Enemy> ignoreList, Vector3 position, float range)
     {
 
@@ -13,7 +20,7 @@ public class Helper
         // Iterate through the enemies to find the nearest one
         foreach (var enemy in enemyList)
         {
-            if (enemy != null && !ignoreList.Contains(enemy))
+            if (enemy != null && checkIfInBoundary(enemy.transform.position) && !ignoreList.Contains(enemy))
             {
                 float distance = Vector3.Distance(position, enemy.transform.position);
 
@@ -41,7 +48,7 @@ public class Helper
         // Iterate through the enemies to find the nearest one
         foreach (var enemy in enemyList)
         {
-            if (enemy != null && !ignoreList.Contains(enemy))
+            if (enemy != null && checkIfInBoundary(enemy.transform.position) && !ignoreList.Contains(enemy))
             {
                 float distance = Vector3.Distance(position, enemy.transform.position);
                 float distance2 = Vector3.Distance(goalPosition, enemy.transform.position);
@@ -70,7 +77,7 @@ public class Helper
         // Iterate through the enemies to find the nearest one
         foreach (var enemy in enemyList)
         {
-            if (enemy != null && !ignoreList.Contains(enemy))
+            if (enemy != null && checkIfInBoundary(enemy.transform.position) && !ignoreList.Contains(enemy))
             {
                 float distance = Vector3.Distance(position, enemy.transform.position);
                 int hp = enemy.hp;
@@ -99,7 +106,7 @@ public class Helper
         // Iterate through the enemies to find the nearest one
         foreach (var enemy in enemyList)
         {
-            if (enemy != null && !ignoreList.Contains(enemy))
+            if (enemy != null && checkIfInBoundary(enemy.transform.position) && !ignoreList.Contains(enemy))
             {
                 float distance = Vector3.Distance(position, enemy.transform.position);
                 int hp = enemy.hp;

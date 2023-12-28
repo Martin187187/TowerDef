@@ -12,6 +12,7 @@ public class WorldController : MonoBehaviour
     public List<Enemy> enemiesToRemove = new List<Enemy>();
     public Vector2Int start = new Vector2Int(0, 0);
     public Vector2Int size = new Vector2Int(10, 10);
+    public Vector2Int boundary = new Vector2Int(2, 0);
     public bool[,] map;
     public Turret[,] turrets;
     public Base basis;
@@ -48,13 +49,14 @@ public class WorldController : MonoBehaviour
 
         for (int i = 0; i < size.x; i++)
         {
+            
             for (int j = 0; j < size.y; j++)
             {
                 Vector3Int position = new Vector3Int(i + start.x, j + start.y, 0);
                 //tilemap.SetTile(position, defaultTile);
                 TileBase tile = tilemap.GetTile(position);
                 map[i, j] = !defaultTile.Equals(tile);
-                if (!defaultTile.Equals(tile))
+                if (!defaultTile.Equals(tile) && i > 1 && i < (size.x -2))
                 {
                     Instantiate(prefab, new Vector3(i + start.x, 0.15f, j + start.y), Quaternion.identity);
                 }
@@ -106,7 +108,7 @@ public class WorldController : MonoBehaviour
 
                     Vector2Int index = new Vector2Int(roundedPosition.x - start.x, roundedPosition.z - start.y);
 
-                    if (turrets[index.x, index.y] == null && map[index.x, index.y])
+                    if (index.x >= 2 && index.x < size.x-2 && index.y >=0 && index.y < size.y && turrets[index.x, index.y] == null && map[index.x, index.y])
                     {
                         var turretGameObject = Instantiate(prefabToPlace.turret, new Vector3(roundedPosition.x, mousePosition.y, roundedPosition.z), Quaternion.identity);
                         Turret turret = turretGameObject.GetComponentInChildren<Turret>();
