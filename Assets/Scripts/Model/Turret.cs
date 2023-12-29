@@ -83,7 +83,11 @@ public class Turret : MonoBehaviour
         if (target != null)
         {
             // Calculate direction to the target
-            Vector3 directionToTarget = target.transform.position - transform.position;
+            
+            Vector3 pos = transform.position;
+            if(projectilePrefab.GetComponent<RocketProjectile>() == null)
+                pos.y+=0.25f;
+            Vector3 directionToTarget = target.transform.position - pos;
             if(projectilePrefab.GetComponent<RocketProjectile>() !=null)
                 directionToTarget = Vector3.up;
 
@@ -94,16 +98,16 @@ public class Turret : MonoBehaviour
             transform.localRotation = Quaternion.Euler(0f, 0f, -angle+90);
 
             // Instantiate and launch a projectile towards the target
-            InstantiateProjectile(directionToTarget);
+            InstantiateProjectile(directionToTarget, pos);
 
 
         }
     }
 
-    private void InstantiateProjectile(Vector3 direction)
+    private void InstantiateProjectile(Vector3 direction, Vector3 pos)
     {
         // Instantiate the projectile prefab
-        GameObject projectileObject = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
+        GameObject projectileObject = Instantiate(projectilePrefab, pos, Quaternion.identity);
         // Configure the projectile component
         Projectile projectile = projectileObject.GetComponent<Projectile>();
         if (projectile != null)

@@ -21,6 +21,7 @@ public abstract class Enemy : Entity
         hp = startHp = enemyData.health;
         moveSpeed = enemyData.movementSpeed;
         targetPosition = transform.position;
+        Destroy(gameObject, 60);
     }
     void Update()
     {
@@ -35,20 +36,21 @@ public abstract class Enemy : Entity
         return slowEffect ? moveSpeed * slowEffect.slowRatio : moveSpeed;
     }
 
-    
+
     protected void SetNewTargetPosition()
     {
         path = controller.FindPath(transform.position, goal.transform.position);
 
+
         if (path != null && path.Count > 0)
         {
-            Debug.Log(targetPosition);
             targetPosition = new Vector3(path[0].x, 0, path[0].z);
+
         }
 
     }
 
-    
+
     protected void HeatMapRegistration()
     {
 
@@ -68,7 +70,7 @@ public abstract class Enemy : Entity
 
     }
 
-    
+
     public void SelfDestroy()
     {
         controller.enemiesToRemove.Add(this);
@@ -83,7 +85,7 @@ public abstract class Enemy : Entity
         hp -= damage;
         if (hp < 0)
         {
-            controller.SetMoney(controller.GetMoney()+5);
+            controller.SetMoney(controller.GetMoney() + 5);
             SelfDestroy();
         }
     }

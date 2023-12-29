@@ -23,12 +23,12 @@ public class BasicEnemy : Enemy
             transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, angle));
         }
         // Move towards the target position using simple vector arithmetic
+        
         transform.position += direction * Mathf.Min(GetMovementSpeed() * Time.deltaTime, distanceToTarget);
         HeatMapRegistration();
 
-        if (Vector3.Distance(transform.position, targetPosition) < 0.1f)
+        if (transform.position == targetPosition)
         {
-            Debug.Log("here");
             SetNewTargetPosition();
         }
     }

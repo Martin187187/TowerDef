@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b20a71663aaaa14cb134dcfda2197fe, type: 3}
   m_Name: Gunner
   m_EditorClassIdentifier: 
-  attackDamage: 12
-  shootingInterval: 0.5
-  shootingSpeed: 7
+  attackDamage: 4
+  shootingInterval: 0.1
+  shootingSpeed: 8
   attackRange: 3
