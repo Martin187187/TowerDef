@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Runtime.CompilerServices;
-
 public class EffectBagUI : MonoBehaviour
 {
     public GameObject buttonPrefab;
@@ -52,7 +51,7 @@ public class EffectBagUI : MonoBehaviour
         
     void OnButtonClick(HitEffect effect)
     {
-        if(State.TURRET_INSPECTOR == state.GetState() && !builder.targetTurret.effectList.Contains(effect))
+        if(Stater.TURRET_INSPECTOR == state.GetState() && !builder.targetTurret.effectList.Contains(effect))
         {
             names.Remove(effect);
             Recalculate();

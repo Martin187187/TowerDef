@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
+using ActionGameFramework.Audio;
 
 public class Turret : MonoBehaviour
 {
@@ -12,93 +14,146 @@ public class Turret : MonoBehaviour
     public List<GameObject> durationEffectList = new List<GameObject>();
     public Entity target;
     public GameObject projectilePrefab;
+    
+    public ParticleSystem fireParticleSystem;
+    public RandomAudioSource randomAudioSource;
+    public Transform rotator;
+    public Transform firingPoint;
 
-    public WorldController controller;
     [SerializeField] public float shootingInterval;
     [SerializeField] public float range;
     [SerializeField] public int attack;
-    [SerializeField] public float shootingSpeed;
+    [SerializeField] public float rotationSpeed;
+    
+    public float angleTolerance = 1f;
 
     public TurretData turretData;
     public int cost = 100;
+    public int baseCost = 100;
 
     public bool stayOnTarget = false;
 
     public TargetStrategy strategy;
-    private float timeSinceLastShot = 0.0f;
+    private float timer = 0.0f;
     public int upgraded = 0;
+    private EntityManager manager;
 
-    void Awake()
+    private void Start()
     {
-
-        transform.parent.rotation = Quaternion.Euler(new Vector3(-90, 0, 0));
+        manager = EntityManager.Instance;
         shootingInterval = turretData.shootingInterval;
         range = turretData.attackRange;
         attack = turretData.attackDamage;
-        shootingSpeed = turretData.shootingSpeed;
+        rotationSpeed = turretData.rotationSpeed;
     }
     void Update()
     {
-        timeSinceLastShot += Time.deltaTime;
 
         // Your shooting logic here
         // Check if enough time has passed and the shots counter is within the limit
-        if (timeSinceLastShot >= shootingInterval)
+        if(target==null || !isInRange(target))
         {
-            // Reset the time since the last shot
-            timeSinceLastShot = 0.0f;
+            FindTarget();
+        }
+        if(target!=null)
+        {
+            AimTarget();
+  
 
-            ShootAtTarget();
+            // Check if the timer has reached the desired interval
+            if (timer >= shootingInterval && IsFacingTarget())
+            {
+                Shoot();
+                FindTarget();
+
+                // Reset the timer
+                timer = 0f;
+            }
+            timer += Time.deltaTime;
+        }
+    }
+    private void FindTarget()
+    {
+        if (target == null || Vector3.Distance(transform.position, target.transform.position) >= range || !stayOnTarget)
+        {
+            Enemy enemy;
+            List<Enemy> enemies = manager.GetEnemies();
+            switch (strategy)
+            {
+                case TargetStrategy.NEAREST_TO_GOAL:
+                    enemy = Helper.FindNearestToGoalEnemy(enemies, new List<Enemy>(), transform.position, manager.getBasisTransform().position, range);
+                    break;
+                case TargetStrategy.LOWEST_HP:
+                    enemy = Helper.FindNearestEnemy(enemies, new List<Enemy>(), transform.position, range);
+                    break;
+                case TargetStrategy.HIGHEST_HP:
+                    enemy = Helper.FindHighestHpEnemy(enemies, new List<Enemy>(), transform.position, range);
+                    break;
+                default:
+                    enemy = Helper.FindNearestEnemy(enemies, new List<Enemy>(), transform.position, range);
+                    break;
+            }
+            target = enemy;
+        }
+    }
+    
+    bool isInRange(Entity target)
+    {
+        float distance = Vector3.Distance(target.transform.position, transform.position);
+        return distance <= range;
+    }
+    bool IsFacingTarget()
+    {
+        if (target != null)
+        {
+            if(projectilePrefab.GetComponent<RocketProjectile>() !=null)
+                return true;
+            // Calculate the angle between the rotator's forward direction and the direction to the target
+            float angle = Vector3.Angle(rotator.forward, (target.transform.position - rotator.position).normalized);
+            
+            // Check if the angle is within the tolerance
+            return Mathf.Abs(angle) <= angleTolerance;
+        }
+        else
+        {
+            Debug.LogWarning("Target is null. Cannot determine if rotator is facing null target.");
+            return false;
         }
     }
 
+    private void AimTarget()
+    {
+        if (target != null)
+        {
+            // Determine the direction to the target
+            Vector3 directionToTarget = target.transform.position - rotator.position;
+            Quaternion targetRotation = Quaternion.LookRotation(directionToTarget, Vector3.up);
+            
+            if(projectilePrefab.GetComponent<RocketProjectile>() !=null)
+                targetRotation.eulerAngles = new Vector3(-30f, targetRotation.eulerAngles.y, targetRotation.eulerAngles.z);
+
+            // Use Quaternion.RotateTowards to limit the rotation to a certain angle
+            rotator.rotation = Quaternion.RotateTowards(rotator.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        }
+    }
     public int CalculateCost()
     {
         return cost + (int)(upgraded * cost);
     }
 
-    private void ShootAtTarget()
+    private void Shoot()
     {
-        if (target == null || Vector3.Distance(transform.position, target.transform.position) >= range || !stayOnTarget)
-        {
-            Enemy enemy;
-            switch (strategy)
-            {
-                case TargetStrategy.NEAREST_TO_GOAL:
-                    enemy = Helper.FindNearestToGoalEnemy(controller.enemies, new List<Enemy>(), transform.position, controller.basis.transform.position, range);
-                    break;
-                case TargetStrategy.LOWEST_HP:
-                    enemy = Helper.FindNearestEnemy(controller.enemies, new List<Enemy>(), transform.position, range);
-                    break;
-                case TargetStrategy.HIGHEST_HP:
-                    enemy = Helper.FindHighestHpEnemy(controller.enemies, new List<Enemy>(), transform.position, range);
-                    break;
-                default:
-                    enemy = Helper.FindNearestEnemy(controller.enemies, new List<Enemy>(), transform.position, range);
-                    break;
-            }
-            if (enemy != null)
-                target = enemy;
-        }
+        
         if (target != null)
         {
             // Calculate direction to the target
             
-            Vector3 pos = transform.position;
-            if(projectilePrefab.GetComponent<RocketProjectile>() == null)
-                pos.y+=0.25f;
-            Vector3 directionToTarget = target.transform.position - pos;
-            if(projectilePrefab.GetComponent<RocketProjectile>() !=null)
-                directionToTarget = Vector3.up;
+            
+            Vector3 directionToTarget = rotator.forward;
 
-            // Calculate the angle in degrees
-            float angle = Mathf.Atan2(directionToTarget.z, directionToTarget.x) * Mathf.Rad2Deg;
-
-            // Rotate turret around the Z-axis only
-            transform.localRotation = Quaternion.Euler(0f, 0f, -angle+90);
 
             // Instantiate and launch a projectile towards the target
-            InstantiateProjectile(directionToTarget, pos);
+            InstantiateProjectile(directionToTarget, firingPoint.position);
 
 
         }
@@ -111,10 +166,10 @@ public class Turret : MonoBehaviour
         // Configure the projectile component
         Projectile projectile = projectileObject.GetComponent<Projectile>();
         if (projectile != null)
-        {
-            projectile.controller = controller;
+        {  
+            PlayParticles(fireParticleSystem, firingPoint.position, target.transform.position);
+            randomAudioSource.PlayRandomClip();
             projectile.attack = attack;
-            projectile.speed = shootingSpeed;
             projectile.goal = target;
             // Set the projectile's direction
             projectile.SetTargetDirection(direction);
@@ -135,4 +190,15 @@ public class Turret : MonoBehaviour
             }
         }
     }
+    public void PlayParticles(ParticleSystem particleSystemToPlay, Vector3 origin, Vector3 lookPosition)
+    {
+        if (particleSystemToPlay == null)
+        {
+            return;
+        }
+        particleSystemToPlay.transform.position = origin;
+        particleSystemToPlay.transform.LookAt(lookPosition);
+        particleSystemToPlay.Play();
+    }
+
 }

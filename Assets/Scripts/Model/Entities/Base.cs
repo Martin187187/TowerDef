@@ -17,8 +17,8 @@ public class Base : Entity
             SceneManager.LoadScene("GameOverScene");
         }
     }
-    public void Damage()
+    public void Damage(int dmg)
     {
-        hp-=1;
+        hp-= dmg;
     }
 }

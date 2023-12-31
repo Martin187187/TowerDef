@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackDamage: 24
   shootingInterval: 4
-  shootingSpeed: 1
-  attackRange: 12
+  rotationSpeed: 120
+  attackRange: 9

@@ -2,7 +2,6 @@ using UnityEngine;
 using System.Collections.Generic;
 public class Projectile : MonoBehaviour
 {
-    public WorldController controller;
     public List<HitEffect> effectList = new List<HitEffect>();
 
     public List<Enemy> enemyList = new List<Enemy>();
@@ -23,9 +22,6 @@ public class Projectile : MonoBehaviour
             // Calculate the rotation to align the forward direction with the target direction
             Quaternion targetRotation = Quaternion.LookRotation(targetDirection, Vector3.down);
 
-            // Apply a 90-degree rotation around the X-axis
-            Quaternion xRotation = Quaternion.Euler(90f, 0f, 0f);
-            targetRotation *= xRotation;
 
             // Set the rotation of the projectile
             transform.rotation = targetRotation;

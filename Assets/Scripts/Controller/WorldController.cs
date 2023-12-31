@@ -8,8 +8,6 @@ using UnityEngine.UIElements;
 public class WorldController : MonoBehaviour
 {
 
-    public List<Enemy> enemies = new List<Enemy>();
-    public List<Enemy> enemiesToRemove = new List<Enemy>();
     public Vector2Int start = new Vector2Int(0, 0);
     public Vector2Int size = new Vector2Int(10, 10);
     public Vector2Int boundary = new Vector2Int(2, 0);
@@ -21,19 +19,16 @@ public class WorldController : MonoBehaviour
     public TileBase defaultTile;
     public ShowTurretsUI prefabToPlace;
     public int money = 600;
-    public Text text;
-    public Text turretCostText;
 
     public int turretCost = 100;
 
     public UIStateManager state;
 
     public GameObject prefab;
-
+    private EntityManager manager;
     public void SetMoney(int money)
     {
         this.money = money;
-        text.text = money.ToString();
     }
 
     public int GetMoney()
@@ -42,6 +37,7 @@ public class WorldController : MonoBehaviour
     }
     void Start()
     {
+        manager = EntityManager.Instance;
         SetMoney(money);
         map = new bool[size.x, size.y];
         heatmap = new int[size.x, size.y];
@@ -67,7 +63,7 @@ public class WorldController : MonoBehaviour
 
 
         int amount = GameObject.FindGameObjectsWithTag("Turret").Length;
-        turretCostText.text = (turretCost).ToString();
+
 
     }
 
@@ -77,13 +73,12 @@ public class WorldController : MonoBehaviour
     {
 
         // Check for left mouse button click
-        if (State.TURRET_PLACEMENT == state.GetState() && Input.GetMouseButtonDown(0))
+        if (Stater.TURRET_PLACEMENT == state.GetState() && Input.GetMouseButtonDown(0))
         {
 
-            state.SetState(State.NONE);
+            state.SetState(Stater.NONE);
 
-            int amount = GameObject.FindGameObjectsWithTag("Turret").Length;
-            int cost = (int)(amount * turretCost * 0.5f) + turretCost;
+            int cost = prefabToPlace.turret.GetComponent<Turret>().baseCost;
             // Check if the main camera exists
             if (Camera.main != null && cost <= money)
             {
@@ -111,26 +106,17 @@ public class WorldController : MonoBehaviour
                     if (index.x >= 2 && index.x < size.x-2 && index.y >=0 && index.y < size.y && turrets[index.x, index.y] == null && map[index.x, index.y])
                     {
                         var turretGameObject = Instantiate(prefabToPlace.turret, new Vector3(roundedPosition.x, mousePosition.y, roundedPosition.z), Quaternion.identity);
+                        turretGameObject.transform.SetParent(manager.getTurretsTransform());
                         Turret turret = turretGameObject.GetComponentInChildren<Turret>();
-                        turret.controller = this;
                         turrets[index.x, index.y] = turret;
                         SetMoney(money - cost);
-                        turretCostText.text = ((int)((amount + 1) * turretCost * 0.5f + turretCost)).ToString();
+                        
                     }
                 }
             }
         }
     }
 
-
-    void LateUpdate()
-    {
-        foreach (var enemy in enemiesToRemove)
-        {
-            enemies.Remove(enemy);
-        }
-        enemiesToRemove.Clear();
-    }
 
     public Vector2Int getCellLocation(Vector3 position)
     {
@@ -154,26 +140,7 @@ public class WorldController : MonoBehaviour
         }
         return result;
     }
-    private float getScore(Vector2Int score)
-    {
 
-        float count = 1;
-        foreach (var item in enemies)
-        {
-
-
-            Vector3Int a = tilemap.WorldToCell(item.transform.position);
-            Vector2Int b = new Vector2Int(a.x, a.y);
-
-            float distance = Vector2Int.Distance(score, b);
-            if (distance < 1)
-            {
-                count = count + (1 - distance);
-            }
-        }
-
-        return count;
-    }
 
     // A* Pathfinding Algorithm
     private List<Vector2Int> FindPath(Vector2Int startPos, Vector2Int goalPos)
@@ -208,7 +175,7 @@ public class WorldController : MonoBehaviour
 
             foreach (Vector2Int neighbor in GetNeighbors(current))
             {
-                float tentativeGScore = gScore[current] + Mathf.Max(0, heatmap[neighbor.x - start.x, neighbor.y - start.y] * 0.5f) + 1;
+                float tentativeGScore = gScore[current] + Mathf.Max(0, heatmap[neighbor.x - start.x, neighbor.y - start.y]) + 1;
 
                 if (!gScore.ContainsKey(neighbor) || tentativeGScore < gScore[neighbor])
                 {

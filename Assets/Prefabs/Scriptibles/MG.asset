@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8b20a71663aaaa14cb134dcfda2197fe, type: 3}
-  m_Name: Gunner
+  m_Name: MG
   m_EditorClassIdentifier: 
-  attackDamage: 4
-  shootingInterval: 0.1
-  shootingSpeed: 8
+  attackDamage: 6
+  shootingInterval: 0.2
+  rotationSpeed: 120
   attackRange: 3

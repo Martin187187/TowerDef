@@ -5,7 +5,7 @@ public class TurretData : ScriptableObject
 {
     public int attackDamage;
     public float shootingInterval;
-    public float shootingSpeed;
+    public float rotationSpeed;
     public float attackRange;
     
 }

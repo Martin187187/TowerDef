@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using ActionGameFramework.Audio;
 
 public abstract class Enemy : Entity
 {
-
+    
     protected List<Vector3> path = new List<Vector3>();
     public Base goal;
     protected Vector3 targetPosition;
@@ -12,7 +13,9 @@ public abstract class Enemy : Entity
     public float moveSpeed = 2.0f; // Adjust the speed as needed
     public EnemyData enemyData;
     public WorldController controller;
-
+    public Transform rotator;
+    public int heatCost = 1;
+    public int damage = 1;
     protected Vector2Int oldLocation;
     protected bool firstTime = true;
 
@@ -28,7 +31,33 @@ public abstract class Enemy : Entity
         Move();
     }
 
-    protected abstract void Move();
+    protected void Move()
+    {
+        if (goal == null)
+            return;
+        if (Vector3.Distance(transform.position, goal.transform.position) < 1f)
+        {
+            goal.Damage(damage);
+            SelfDestroy();
+            return;
+        }
+        // Calculate the direction and distance to the target
+        Vector3 direction = (targetPosition - transform.position).normalized;
+        float distanceToTarget = Vector3.Distance(transform.position, targetPosition);
+
+        
+        float angle = Mathf.Atan2(direction.z, direction.x) * Mathf.Rad2Deg;
+        rotator.transform.rotation = Quaternion.Euler(new Vector3(0f, -angle+90, 0f));
+        transform.position += direction * Mathf.Min(GetMovementSpeed() * Time.deltaTime, distanceToTarget);
+        
+        
+        HeatMapRegistration();
+
+        if (transform.position == targetPosition)
+        {
+            SetNewTargetPosition();
+        }
+    }
 
     protected float GetMovementSpeed()
     {
@@ -44,8 +73,11 @@ public abstract class Enemy : Entity
 
         if (path != null && path.Count > 0)
         {
-            targetPosition = new Vector3(path[0].x, 0, path[0].z);
-
+            var a = new Vector3(path[0].x, 0, path[0].z);
+            if(a == targetPosition)
+                path.RemoveAt(0);
+            if (path != null && path.Count > 0)
+                targetPosition = new Vector3(path[0].x, 0, path[0].z);
         }
 
     }
@@ -61,10 +93,10 @@ public abstract class Enemy : Entity
 
 
             if (!firstTime)
-                controller.heatmap[oldLocation.x, oldLocation.y] -= 1;
+                controller.heatmap[oldLocation.x, oldLocation.y] -= heatCost;
             firstTime = false;
             oldLocation = newLocation;
-            controller.heatmap[newLocation.x, newLocation.y] += 1;
+            controller.heatmap[newLocation.x, newLocation.y] += heatCost;
 
         }
 
@@ -73,10 +105,9 @@ public abstract class Enemy : Entity
 
     public void SelfDestroy()
     {
-        controller.enemiesToRemove.Add(this);
         HeatMapRegistration();
         if (!firstTime)
-            controller.heatmap[oldLocation.x, oldLocation.y] -= 1;
+            controller.heatmap[oldLocation.x, oldLocation.y] -= heatCost;
         Destroy(gameObject);
     }
 
@@ -85,7 +116,7 @@ public abstract class Enemy : Entity
         hp -= damage;
         if (hp < 0)
         {
-            controller.SetMoney(controller.GetMoney() + 5);
+            controller.SetMoney(controller.GetMoney() + this.damage*5);
             SelfDestroy();
         }
     }

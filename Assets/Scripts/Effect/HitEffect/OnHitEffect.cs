@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
 public class OnHitEffect : HitEffect
 {
     public float maxLength;
@@ -7,7 +9,8 @@ public class OnHitEffect : HitEffect
 
         if(projectile.enemyList.Count >= maxHits)
             return false;
-        Enemy enemy2 = Helper.FindNearestEnemy(projectile.controller.enemies, projectile.enemyList, projectile.transform.position, 5);
+        var enemies = EntityManager.Instance.GetEnemies();
+        Enemy enemy2 = Helper.FindNearestEnemy(enemies, projectile.enemyList, projectile.transform.position, 5);
         if(enemy2 != null){
             
             Vector3 directionToTarget = enemy2.transform.position - projectile.transform.position;

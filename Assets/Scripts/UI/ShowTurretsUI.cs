@@ -30,14 +30,14 @@ public class ShowTurretsUI : MonoBehaviour
         float startX = -totalWidth / 2f;
 
         // Loop through the list of sprites and create buttons for each sprite
-        foreach (Sprite sprite in spriteList)
+        for (int i = 0; i < spriteList.Count; i++)
         {
-            CreateButton(panel, sprite, startX);
+            CreateButton(panel, spriteList[i], turretList[i].GetComponent<Turret>(), startX);
             startX += buttonSize + buttonSpacing; // Update the starting position for the next button
         }
     }
 
-    void CreateButton(GameObject panel, Sprite sprite, float startX)
+    void CreateButton(GameObject panel, Sprite sprite, Turret turret, float startX)
     {
         // Instantiate a button prefab and set it as a child of the panel
         GameObject button = Instantiate(buttonPrefab, panel.transform);
@@ -51,6 +51,7 @@ public class ShowTurretsUI : MonoBehaviour
         // Add an Image component to the button GameObject to display the sprite
         Image imageComponent = button.GetComponent<Image>();
         imageComponent.sprite = sprite;
+        button.GetComponentInChildren<Text>().text = turret.baseCost.ToString();
 
         // Set the size of the button as needed
         buttonRectTransform.sizeDelta = new Vector2(buttonSize, buttonSize);
@@ -63,10 +64,10 @@ public class ShowTurretsUI : MonoBehaviour
     void OnButtonClick(Sprite clickedSprite)
     {
         Debug.Log("Button clicked! Sprite: " + clickedSprite.name);
-        if(State.NONE == state.GetState())
+        if(Stater.NONE == state.GetState())
         {
             
-            state.SetState(State.TURRET_PLACEMENT);
+            state.SetState(Stater.TURRET_PLACEMENT);
             turret = turretList[spriteList.IndexOf(clickedSprite)];
         }
     }

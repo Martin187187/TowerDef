@@ -3,38 +3,36 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public enum State
+public enum Stater
 {
     NONE, TURRET_PLACEMENT, TURRET_INSPECTOR
 }
 public class UIStateManager : MonoBehaviour
 {
     
-    private State state = State.NONE;
-    public Text stateText;
-    public Button button;
-
+    private Stater state = Stater.NONE;
+    private bool changed = true;
 
     void Start()
     {
         
-        button.onClick.AddListener(() => SetState(State.NONE));
     }
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            SetState(State.NONE);
+            SetState(Stater.NONE);
         }
     }
 
-    public void SetState(State a)
+
+
+    public void SetState(Stater a)
     {
         state = a;
-        stateText.text = a.ToString();
     }
 
-    public State GetState()
+    public Stater GetState()
     {
         return state;
     }

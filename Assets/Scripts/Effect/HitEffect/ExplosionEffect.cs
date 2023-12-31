@@ -1,5 +1,6 @@
-using System.Collections;
+
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ExplosionEffect : HitEffect
@@ -9,7 +10,7 @@ public class ExplosionEffect : HitEffect
     public override bool Effect(Projectile projectile, Enemy enemy){
         
         int damage = (int)(projectile.attack * damageRatio);
-        foreach (var enemy2 in projectile.controller.enemies)
+        foreach (var enemy2 in EntityManager.Instance.GetEnemies())
         {
             if (enemy2 != null && enemy2 != enemy)
             {

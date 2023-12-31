@@ -20,6 +20,7 @@ public class DynamicUIBuilder : MonoBehaviour
     public Text ssText;
     public Text rangeText;
 
+    public Button closeButton;
     public Button attackButton;
     public Button asButton;
     public Button ssButton;
@@ -29,6 +30,8 @@ public class DynamicUIBuilder : MonoBehaviour
     public Dropdown dropdown;
     public EffectBagUI bag;
     public UIStateManager state;
+
+    public WorldController controller;
     void Start()
     {
         mainPanel = new GameObject("MainPanel");
@@ -38,6 +41,7 @@ public class DynamicUIBuilder : MonoBehaviour
         asButton.onClick.AddListener(() => OnASButton());
         ssButton.onClick.AddListener(() => OnSSButton());
         rangeButton.onClick.AddListener(() => OnRangeButton());
+        closeButton.onClick.AddListener(() => state.SetState(Stater.NONE));
 
         // Subscribe to the OnValueChanged event of the Dropdown
         dropdown.onValueChanged.AddListener((index) => OnDropdownValueChanged(index));
@@ -56,13 +60,13 @@ public class DynamicUIBuilder : MonoBehaviour
     private void OnSSButton()
     {
         int cost = targetTurret.CalculateCost();
-        int money = targetTurret.controller.GetMoney();
+        int money = controller.GetMoney();
         if (cost <= money)
         {
-            targetTurret.controller.SetMoney(money - cost);
+            controller.SetMoney(money - cost);
             targetTurret.upgraded++;
-            targetTurret.shootingSpeed++;
-            ssText.text = "" + targetTurret.shootingSpeed;
+            targetTurret.rotationSpeed += targetTurret.turretData.rotationSpeed * 0.1f;
+            ssText.text = "" + targetTurret.rotationSpeed;
             setNames();
         }
     }
@@ -71,10 +75,10 @@ public class DynamicUIBuilder : MonoBehaviour
     {
 
         int cost = targetTurret.CalculateCost();
-        int money = targetTurret.controller.GetMoney();
+        int money = controller.GetMoney();
         if (cost <= money)
         {
-            targetTurret.controller.SetMoney(money - cost);
+            controller.SetMoney(money - cost);
             targetTurret.upgraded++;
             targetTurret.range += targetTurret.turretData.attackRange * 0.2f;
             rangeText.text = "" + targetTurret.range;
@@ -86,10 +90,10 @@ public class DynamicUIBuilder : MonoBehaviour
     {
 
         int cost = targetTurret.CalculateCost();
-        int money = targetTurret.controller.GetMoney();
+        int money = controller.GetMoney();
         if (cost <= money)
         {
-            targetTurret.controller.SetMoney(money - cost);
+            controller.SetMoney(money - cost);
             targetTurret.upgraded++;
             targetTurret.shootingInterval *= 0.95f;
             asText.text = "" + targetTurret.shootingInterval;
@@ -101,10 +105,10 @@ public class DynamicUIBuilder : MonoBehaviour
     {
 
         int cost = targetTurret.CalculateCost();
-        int money = targetTurret.controller.GetMoney();
+        int money = controller.GetMoney();
         if (cost <= money)
         {
-            targetTurret.controller.SetMoney(money - cost);
+            controller.SetMoney(money - cost);
             targetTurret.upgraded++;
             targetTurret.attack += (int)(targetTurret.turretData.attackDamage * 0.5);
             attackText.text = "" + targetTurret.attack;
@@ -133,7 +137,7 @@ public class DynamicUIBuilder : MonoBehaviour
         mainPanel.transform.SetParent(parentPanel, false);
         // Create the main panel
         RectTransform mainPanelRect = mainPanel.AddComponent<RectTransform>();
-        mainPanelRect.localPosition = new Vector2(0, -(buttonHeight + 5) / 2 * names.Count - 200);
+        mainPanelRect.localPosition = new Vector2(-180+ 26.84f, -(buttonHeight + 5) / 2 * names.Count - 380);
         mainPanelRect.sizeDelta = new Vector2(buttonWidth, (buttonHeight + 5) * names.Count);
         // Set up vertical layout group for the main panel
         VerticalLayoutGroup verticalLayout = mainPanel.AddComponent<VerticalLayoutGroup>();
@@ -164,7 +168,7 @@ public class DynamicUIBuilder : MonoBehaviour
     void Update()
     {
         // Check if the left mouse button is pressed
-        if (State.NONE == state.GetState() && Input.GetMouseButtonDown(0))
+        if (Stater.NONE == state.GetState() && Input.GetMouseButtonDown(0))
         {
             // Get the mouse position in screen coordinates
             Vector3 mousePosition = Input.mousePosition;
@@ -182,7 +186,7 @@ public class DynamicUIBuilder : MonoBehaviour
                     Debug.Log("dhn");
                     mainPanel.SetActive(true);
                     statsPanel.SetActive(true);
-                    state.SetState(State.TURRET_INSPECTOR);
+                    state.SetState(Stater.TURRET_INSPECTOR);
 
                     // Assuming Turret script is attached to the same GameObject as the collider
                     Turret turret = hit.collider.GetComponentInChildren<Turret>();
@@ -194,13 +198,13 @@ public class DynamicUIBuilder : MonoBehaviour
                     Recalculate();
                     attackText.text = "" + turret.attack;
                     asText.text = "" + turret.shootingInterval;
-                    ssText.text = "" + turret.shootingSpeed;
+                    ssText.text = "" + turret.rotationSpeed;
                     rangeText.text = "" + turret.range;
                     dropdown.value = (int)targetTurret.strategy;
                 }
             }
         }
-        else if (State.TURRET_INSPECTOR != state.GetState())
+        else if (Stater.TURRET_INSPECTOR != state.GetState())
         {
             mainPanel.SetActive(false);
             statsPanel.SetActive(false);
