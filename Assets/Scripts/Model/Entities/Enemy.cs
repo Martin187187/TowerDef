@@ -9,6 +9,7 @@ public abstract class Enemy : Entity
     protected List<Vector3> path = new List<Vector3>();
     public Base goal;
     protected Vector3 targetPosition;
+    
     [SerializeField]
     public float moveSpeed = 2.0f; // Adjust the speed as needed
     public EnemyData enemyData;

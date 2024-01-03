@@ -45,4 +45,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damageRatio: 1
-  radius: 1.5
+  radius: 2

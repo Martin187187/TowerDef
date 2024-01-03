@@ -12,10 +12,11 @@ public class ExplosionEffect : HitEffect
         int damage = (int)(projectile.attack * damageRatio);
         foreach (var enemy2 in EntityManager.Instance.GetEnemies())
         {
-            if (enemy2 != null && enemy2 != enemy)
+            if (enemy2 != null && enemy2 != enemy && projectile is RocketProjectile)
             {
+                RocketProjectile rocket = (RocketProjectile)projectile;
 
-                float distance = Vector3.Distance(projectile.transform.position, enemy2.transform.position);
+                float distance = Vector3.Distance(rocket.impact.position, enemy2.transform.position);
 
                 // Check if this enemy is closer than the current closest
                 if (distance < radius)

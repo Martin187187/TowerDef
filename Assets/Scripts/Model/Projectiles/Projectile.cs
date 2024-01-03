@@ -39,6 +39,7 @@ public class Projectile : MonoBehaviour
         transform.Translate(targetDirection * speed * Time.deltaTime, Space.World);
     }
 
+    
     public void DestroyProjectile()
     {
         Destroy(gameObject);

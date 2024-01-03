@@ -12,6 +12,7 @@ public class Turret : MonoBehaviour
     public List<HitEffect> effectList = new List<HitEffect>();
     public List<HitEffect> hardcodeEffectList = new List<HitEffect>();
     public List<GameObject> durationEffectList = new List<GameObject>();
+    public List<Effect> turretDurationEffectList = new List<Effect>();
     public Entity target;
     public GameObject projectilePrefab;
     
@@ -135,6 +136,27 @@ public class Turret : MonoBehaviour
             // Use Quaternion.RotateTowards to limit the rotation to a certain angle
             rotator.rotation = Quaternion.RotateTowards(rotator.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
+    }
+    public int GetDamage()
+    {
+        float addition = 0;
+        float multiplication = 1;
+        foreach (var item in turretDurationEffectList)
+        {
+            if(item is IncreaseStatsEffect)
+            {
+                IncreaseStatsEffect increaseStats = (IncreaseStatsEffect)item;
+                if(increaseStats.type == IncreaseStatsEffect.Type.ATTACK)
+                {
+                    if(increaseStats.integration == IncreaseStatsEffect.Integration.ADDITION)
+                        addition += increaseStats.amount;
+                    else if(increaseStats.integration == IncreaseStatsEffect.Integration.MULTIPLICATION)
+                        multiplication += increaseStats.amount;
+                }
+            }
+        }
+
+        return (int)((attack + addition) * multiplication);
     }
     public int CalculateCost()
     {

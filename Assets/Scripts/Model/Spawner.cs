@@ -60,7 +60,7 @@ public class Spawner : MonoBehaviour
         Enemy quad = a.GetComponent<Enemy>();
         float moveNoise = Random.Range(-0.2f, 0.2f+0.01f*startingWave);
         quad.moveSpeed += moveNoise;
-        quad.hp += (int)(startingWave *Mathf.Log(startingWave+1, 4) * quad.enemyData.health);
+        quad.hp += (int)(startingWave *Mathf.Sqrt(startingWave)*(quad.enemyData.health*startingWave)/50);
         quad.startHp = quad.hp;
         quad.goal = goal;
         quad.controller = controller;
