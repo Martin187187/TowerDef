@@ -1,9 +1,10 @@
 using UnityEngine;
 using System.Collections.Generic;
-public class Projectile : MonoBehaviour
+using System.Linq;
+public class Projectile : Effector
 {
-    public List<HitEffect> effectList = new List<HitEffect>();
 
+    public ParticleSystem fireParticleSystem;
     public List<Enemy> enemyList = new List<Enemy>();
     public Vector3 targetDirection; // New variable to store the target direction
     public Entity goal;
@@ -28,43 +29,55 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    private void Start()
+    protected override void Init()
     {
         Destroy(gameObject, lifetime);
     }
 
     private void Update()
     {
+
+        UpdateStaticEffects(this);
         // Move the projectile forward in the target direction
-        transform.Translate(targetDirection * speed * Time.deltaTime, Space.World);
+        transform.Translate(targetDirection * CalculateMovementSpeed() * Time.deltaTime, Space.World);
     }
 
-    
+
     public void DestroyProjectile()
     {
         Destroy(gameObject);
-        if(explodePrefab)
+        if (explodePrefab)
             Instantiate(explodePrefab, transform.position, Quaternion.identity);
+    }
+    public void PlayParticles(ParticleSystem particleSystemToPlay, Vector3 origin, Vector3 direction)
+    {
+        if (particleSystemToPlay == null)
+        {
+            return;
+        }
+        particleSystemToPlay.transform.position = origin;
+        particleSystemToPlay.transform.rotation = Quaternion.LookRotation(direction, Vector3.down);
+        particleSystemToPlay.Play();
     }
 
     public void Hit(Enemy enemy)
     {
         if (enemy == null)
         {
-            foreach (HitEffect effect in effectList)
-                effect.Effect(this, enemy);
+            PerformOnHit(this, enemy, 0);
             DestroyProjectile();
+            if (explodePrefab)
+                Instantiate(explodePrefab, transform.position, Quaternion.identity);
         }
         else if (!enemyList.Contains(enemy))
         {
             enemyList.Add(enemy);
-            bool keepalive = false;
-            foreach (HitEffect effect in effectList)
-                keepalive |= effect.Effect(this, enemy);
-            enemy.Damage(attack);
+            bool keepalive = PerformOnHit(this, enemy, 0);
+            enemy.Damage(CalculateDamage());
             if (!keepalive)
                 DestroyProjectile();
-            else if(explodePrefab)
+
+            else if (explodePrefab)
                 Instantiate(explodePrefab, transform.position, Quaternion.identity);
         }
     }
@@ -78,4 +91,33 @@ public class Projectile : MonoBehaviour
             Hit(enemy);
         }
     }
+
+
+    public float CalculateMovementSpeed()
+    {
+        float sum = speed;
+        float mult = 1;
+        foreach (var item in GetEffectList().OfType<ProjectileStatsEffect>().Where((x) => x.modificationStat == ProjectileStatsEffect.ProjectileStats.SPEED))
+        {
+            sum += item.GetAdditionValue(this);
+            mult *= item.GetMultiplicationValue(this);
+        }
+
+        return sum * mult;
+    }
+
+    public int CalculateDamage()
+    {
+        float sum = attack;
+        float mult = 1;
+        foreach (var item in GetEffectList().OfType<ProjectileStatsEffect>().Where((x) => x.modificationStat == ProjectileStatsEffect.ProjectileStats.DAMAGE))
+        {
+            sum += item.GetAdditionValue(this);
+            mult *= item.GetMultiplicationValue(this);
+        }
+
+        return (int)(sum * mult);
+    }
+
+
 }

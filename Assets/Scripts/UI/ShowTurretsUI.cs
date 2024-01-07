@@ -51,7 +51,7 @@ public class ShowTurretsUI : MonoBehaviour
         // Add an Image component to the button GameObject to display the sprite
         Image imageComponent = button.GetComponent<Image>();
         imageComponent.sprite = sprite;
-        button.GetComponentInChildren<Text>().text = turret.baseCost.ToString();
+        button.GetComponentInChildren<Text>().text = turret.turretData.turrestCost.ToString();
 
         // Set the size of the button as needed
         buttonRectTransform.sizeDelta = new Vector2(buttonSize, buttonSize);

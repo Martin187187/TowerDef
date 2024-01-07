@@ -12,7 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b20a71663aaaa14cb134dcfda2197fe, type: 3}
   m_Name: MG
   m_EditorClassIdentifier: 
-  attackDamage: 6
+  attackDamage: 80
   shootingInterval: 0.2
   rotationSpeed: 120
   attackRange: 3
+  cooldownTime: 0.05
+  upgradeCost: 50
+  turrestCost: 200

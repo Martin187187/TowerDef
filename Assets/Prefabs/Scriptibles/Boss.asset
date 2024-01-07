@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3c3a37881ff77240a6c9399201ae67b, type: 3}
   m_Name: Boss
   m_EditorClassIdentifier: 
-  health: 80
+  health: 800
   movementSpeed: 0.75

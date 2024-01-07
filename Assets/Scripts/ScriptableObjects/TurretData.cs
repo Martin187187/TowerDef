@@ -7,5 +7,9 @@ public class TurretData : ScriptableObject
     public float shootingInterval;
     public float rotationSpeed;
     public float attackRange;
+    public float cooldownTime;
+    public int upgradeCost;
+    public int turrestCost;
+
     
 }

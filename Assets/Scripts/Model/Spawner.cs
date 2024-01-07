@@ -16,13 +16,19 @@ public class Spawner : MonoBehaviour
     public bool autoplay = false;
 
     public int enemiesSpawned = 0;
-    public bool isRunning = false;
-
-
-    public List<HitEffect> possibleEffects = new List<HitEffect>();
-    public EffectBagUI bag;
+    private bool isRunning = false;
+    public System.Action OnRunningChange;
+    public bool IsRunning
+    {
+        get { return isRunning; }
+        set
+        {
+            isRunning = value;
+            OnRunningChange?.Invoke();
+        }
+    }
+    public List<AbstractEffect> possibleEffects = new List<AbstractEffect>();
     private EntityManager manager;
-
     private void Start()
     {
         manager = EntityManager.Instance;
@@ -32,14 +38,14 @@ public class Spawner : MonoBehaviour
 
     void Update()
     {
-        if (!isRunning && manager.GetEnemies().Count == 0 && (startNextWave || autoplay))
+        if (!IsRunning && manager.GetEnemies().Count == 0 && (startNextWave || autoplay))
         {
             enemiesSpawned = 0;
             startNextWave = false;
 
-            
+
             startingWave++;
-            isRunning = true;
+            IsRunning = true;
             InvokeRepeating("SpawnPrefab", 0f, spawnInterval);
         }
     }
@@ -52,15 +58,16 @@ public class Spawner : MonoBehaviour
     {
         // Instantiate the prefab at the current position
         GameObject a;
-        if(enemiesSpawned % 50 == 49)
+        if (enemiesSpawned % 50 == 49)
             a = Instantiate(prefabToSpawnBoss, transform.position, Quaternion.identity);
         else
             a = Instantiate(prefabToSpawn, transform.position, Quaternion.identity);
         a.transform.SetParent(manager.getEnemiesTransform());
         Enemy quad = a.GetComponent<Enemy>();
-        float moveNoise = Random.Range(-0.2f, 0.2f+0.01f*startingWave);
-        quad.moveSpeed += moveNoise;
-        quad.hp += (int)(startingWave *Mathf.Sqrt(startingWave)*(quad.enemyData.health*startingWave)/50);
+        float moveNoise = Random.Range(-0.2f, 0.2f + 0.01f * startingWave);
+        quad.IncreaseBaseMovementSpeed(moveNoise);
+        int value = (int)(startingWave * Mathf.Sqrt(startingWave) * (quad.enemyData.health * startingWave) / 50);
+        quad.hp+=value;
         quad.startHp = quad.hp;
         quad.goal = goal;
         quad.controller = controller;
@@ -68,18 +75,15 @@ public class Spawner : MonoBehaviour
 
         if (enemiesSpawned > GetWaveSize())
         {
-            isRunning = false;
+            IsRunning = false;
             CancelInvoke("SpawnPrefab");
-
-            if (startingWave % 5 == 1 && possibleEffects.Count > 0)
+            if (startingWave % 5 == 1 )
             {
                 // Generate a random index within the valid range
                 int randomIndex = Random.Range(0, possibleEffects.Count);
 
                 // Return the element at the random index
-                HitEffect effect = possibleEffects[randomIndex];
-                bag.names.Add(effect);
-                bag.Recalculate();
+                manager.createRandomSpawnableEffect();
             }
         }
     }

@@ -282,7 +282,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7564cc5d320fc304b8bcb80c052dcb4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effectList: []
+  initialEffects:
+  - {fileID: 710658502493130466, guid: 420466178f21da74d95dc830100043db, type: 3}
+  - {fileID: 1088439276770749275, guid: 4bbf79651e5ba05448f5b5054eb084c2, type: 3}
+  - {fileID: 2466179628494035023, guid: c0633bfdd2e3bf143974bcd96cf18bba, type: 3}
+  effectsRemoval: []
+  fireParticleSystem: {fileID: 0}
   enemyList: []
   targetDirection: {x: 0, y: 0, z: 0}
   goal: {fileID: 0}
@@ -337,5 +342,5 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.11
-  m_Center: {x: 0, y: 0, z: 1.11}
+  m_Radius: 0.26
+  m_Center: {x: 0, y: 0, z: 0}

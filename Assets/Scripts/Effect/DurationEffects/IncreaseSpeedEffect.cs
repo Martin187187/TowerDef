@@ -2,16 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IncreaseSpeedEffect : Effect
+public class IncreaseSpeedEffect : ProjectileStatsEffect
 {
-    public float increaseRatio = 1.2f;
-    protected override void EffectParent()
+    public float speedRatio = 1.2f;
+    public float exponent = 2f;
+    
+    public override void ConsumeOtherObject(AbstractEffect otherObject)
     {
-        Projectile projectile = transform.parent.GetComponent<Projectile>();
 
-        if(projectile!=null)
+        if (!IsCompatible(otherObject))
         {
-            projectile.speed*=increaseRatio;
+            Debug.LogWarning("You tried to combine non compatible Effects.");
+            return;
         }
+        IncreaseSpeedEffect otherEffect = (IncreaseSpeedEffect)otherObject;
+        Destroy(otherEffect.gameObject);
+    }
+    public override float GetAdditionValue(Projectile effector)
+    {
+        float x = effector.GetLifetime();
+        return speedRatio * Mathf.Pow(x, exponent);
+    }
+
+    public override float GetMultiplicationValue(Projectile effector)
+    {
+        return 1;
     }
 }

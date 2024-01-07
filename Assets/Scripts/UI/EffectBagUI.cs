@@ -10,15 +10,18 @@ public class EffectBagUI : MonoBehaviour
     public Transform parentPanel;
     public float buttonWidth = 150f;
     public float buttonHeight = 30f;
-    public List<HitEffect> names = new List<HitEffect>();
 
     private GameObject mainPanel;
     public GameObject contentPrefab;
     public DynamicUIBuilder builder;
+    public EntityManager entityManager;
 
     public UIStateManager state;
     void Start()
     {
+
+        entityManager = EntityManager.Instance;
+        entityManager.OnListChanged += Recalculate;
         mainPanel = contentPrefab;
         mainPanel.AddComponent<VerticalLayoutGroup>();
         Recalculate();
@@ -35,11 +38,11 @@ public class EffectBagUI : MonoBehaviour
         // Create the main panel
         RectTransform mainPanelRect = mainPanel.GetComponent<RectTransform>();
         mainPanelRect.localPosition = new Vector2(0, 0);
-        mainPanelRect.sizeDelta = new Vector2(buttonWidth, (buttonHeight + 5) * names.Count);
+        mainPanelRect.sizeDelta = new Vector2(buttonWidth, (buttonHeight + 5) * entityManager.GetEffects().Count);
         // Set the size of the buttons in the prefab
 
         // Create buttons dynamically
-        foreach (var name in names)
+        foreach (var name in entityManager.GetEffects())
         {
             GameObject button = Instantiate(buttonPrefab, mainPanel.transform);
             button.GetComponentInChildren<Text>().text = name.name;
@@ -48,16 +51,27 @@ public class EffectBagUI : MonoBehaviour
             buttonComponent.onClick.AddListener(() => OnButtonClick(name));
         }
     }
-        
-    void OnButtonClick(HitEffect effect)
+
+    void OnButtonClick(AbstractEffect effect)
     {
-        if(Stater.TURRET_INSPECTOR == state.GetState() && !builder.targetTurret.effectList.Contains(effect))
+        if (Stater.TURRET_INSPECTOR == state.GetState())
         {
-            names.Remove(effect);
+            AbstractEffect compatibleEffect = builder.targetTurret.GetCompatibleEffect(effect);
+
+            if (compatibleEffect)
+            {
+                entityManager.RemoveEffect(effect);
+                compatibleEffect.ConsumeOtherObject(effect);
+                Recalculate();
+                builder.Recalculate();
+                return;
+            }
+
+            entityManager.RemoveEffect(effect);
+            builder.targetTurret.AddEffect(effect);
             Recalculate();
-            builder.targetTurret.effectList.Add(effect);
             builder.Recalculate();
-            
+
         }
     }
 

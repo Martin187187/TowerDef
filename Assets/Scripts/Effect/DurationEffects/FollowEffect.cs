@@ -1,15 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
+using NUnit.Framework;
 using UnityEngine;
 
-public class FollowEffect : Effect
+public class FollowEffect : StaticEffect
 {
     public float maxAngle = 1.0f;
     private Vector3 lastGoal = Vector3.zero;
-    
-    protected override void EffectParent()
+
+    protected override void UpdateEffectConcrete(Effector effector){
+        Follow((Projectile)effector);
+    }
+
+    protected void Follow(Projectile projectile)
     {
-        Projectile projectile = transform.parent.GetComponent<Projectile>();
         
         Vector3 target = projectile.goal ? projectile.goal.transform.position : lastGoal;
         
@@ -20,7 +24,7 @@ public class FollowEffect : Effect
             Vector3 currentDirection = projectile.targetDirection;
             Vector3 currentPosition = projectile.transform.position;
 
-            if(Vector3.Distance(currentPosition, target) < 0.1f || currentPosition.y < 0){
+            if(Vector3.Distance(currentPosition, target) < 0.1f || currentPosition.y < -0.2f){
                 projectile.Hit(null);
                 return;
             }
@@ -44,5 +48,10 @@ public class FollowEffect : Effect
             projectile.SetTargetDirection(newDirection);
             projectile.targetDirection = newDirection;
         }
+    }
+
+    public override void ConsumeOtherObject(AbstractEffect otherObject)
+    {
+        throw new System.NotImplementedException();
     }
 }

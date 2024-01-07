@@ -21,4 +21,5 @@ public class Base : Entity
     {
         hp-= dmg;
     }
+
 }

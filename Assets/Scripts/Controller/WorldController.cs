@@ -18,27 +18,15 @@ public class WorldController : MonoBehaviour
     public Tilemap tilemap;
     public TileBase defaultTile;
     public ShowTurretsUI prefabToPlace;
-    public int money = 600;
 
     public int turretCost = 100;
-
     public UIStateManager state;
 
     public GameObject prefab;
     private EntityManager manager;
-    public void SetMoney(int money)
-    {
-        this.money = money;
-    }
-
-    public int GetMoney()
-    {
-        return this.money;
-    }
     void Start()
     {
         manager = EntityManager.Instance;
-        SetMoney(money);
         map = new bool[size.x, size.y];
         heatmap = new int[size.x, size.y];
         turrets = new Turret[size.x, size.y];
@@ -54,7 +42,8 @@ public class WorldController : MonoBehaviour
                 map[i, j] = !defaultTile.Equals(tile);
                 if (!defaultTile.Equals(tile) && i > 1 && i < (size.x -2))
                 {
-                    Instantiate(prefab, new Vector3(i + start.x, 0.15f, j + start.y), Quaternion.identity);
+                    var block =Instantiate(prefab, new Vector3(i + start.x, 0.15f, j + start.y), Quaternion.identity);
+                    block.transform.parent = transform;
                 }
                 heatmap[i, j] = 0;
 
@@ -80,7 +69,7 @@ public class WorldController : MonoBehaviour
 
             int cost = prefabToPlace.turret.GetComponent<Turret>().baseCost;
             // Check if the main camera exists
-            if (Camera.main != null && cost <= money)
+            if (Camera.main != null && cost <= manager.GetMoney())
             {
 
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -109,7 +98,7 @@ public class WorldController : MonoBehaviour
                         turretGameObject.transform.SetParent(manager.getTurretsTransform());
                         Turret turret = turretGameObject.GetComponentInChildren<Turret>();
                         turrets[index.x, index.y] = turret;
-                        SetMoney(money - cost);
+                        manager.SetMoney(manager.GetMoney() - cost);
                         
                     }
                 }

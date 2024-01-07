@@ -9939,26 +9939,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18e5cb22cb0b211429667fcb24387129, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effectList: []
-  hardcodeEffectList: []
-  durationEffectList: []
+  initialEffects: []
+  effectsRemoval: []
   target: {fileID: 0}
   projectilePrefab: {fileID: 2213035018862788493, guid: b84c171517309414991e98da64203ba6, type: 3}
   fireParticleSystem: {fileID: 5215587621967784372}
   randomAudioSource: {fileID: 6047650456016897008}
   rotator: {fileID: 6425380998335332289}
   firingPoint: {fileID: 8710804005866559211}
-  shootingInterval: 0
-  range: 0
-  attack: 0
-  rotationSpeed: 120
   angleTolerance: 5
   turretData: {fileID: 11400000, guid: d8562ca611845d2448585e53b74278c1, type: 2}
   cost: 50
   baseCost: 200
   stayOnTarget: 0
   strategy: 0
+  neededCooldown: 0.05
   upgraded: 0
+  kills: 0
 --- !u!65 &-4847658646478722614
 BoxCollider:
   m_ObjectHideFlags: 0

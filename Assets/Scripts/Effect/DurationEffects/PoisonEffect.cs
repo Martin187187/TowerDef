@@ -2,17 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PoisonEffect : Effect
+public class PoisonEffect : StaticEffect
 {
-    public int damage = 1;
-    protected override void EffectParent()
+    public float damageRatio = 0.05f;
+
+    public override void ConsumeOtherObject(AbstractEffect otherObject)
     {
-        // Check if the GameObject has a parent
-        if (transform.parent != null)
+
+        if (!IsCompatible(otherObject))
         {
-            Enemy enemy = transform.parent.GetComponent<Enemy>();
-            enemy.Damage((int)(enemy.hp*0.05f));
-            
+            Debug.LogWarning("You tried to combine non compatible Effects.");
+            return;
         }
+        PoisonEffect otherEffect = (PoisonEffect)otherObject;
+        damageRatio += otherEffect.damageRatio;
+        Destroy(otherEffect.gameObject);
     }
+
+    protected override void UpdateEffectConcrete(Effector effector)
+    {
+        EffectParent((Enemy)effector);
+    }
+    private void EffectParent(Enemy enemy)
+    {
+        enemy.Damage((int)(enemy.hp * damageRatio));
+    }
+
 }

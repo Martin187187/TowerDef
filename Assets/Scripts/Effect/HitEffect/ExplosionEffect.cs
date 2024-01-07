@@ -3,13 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class ExplosionEffect : HitEffect
+public class ExplosionEffect : ActionEffect
 {
     public float damageRatio = 0.35f;
     public float radius = 1f;
-    public override bool Effect(Projectile projectile, Enemy enemy){
+
+    public override void ConsumeOtherObject(AbstractEffect otherObject)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override bool OnHitEffect(Effector originEffector, Effector effected)
+    {
+        return Effect((Projectile)originEffector,(Enemy)effected);
+    }
+    private bool Effect(Projectile projectile, Enemy enemy){
         
-        int damage = (int)(projectile.attack * damageRatio);
+        int damage = (int)(projectile.CalculateDamage() * damageRatio);
         foreach (var enemy2 in EntityManager.Instance.GetEnemies())
         {
             if (enemy2 != null && enemy2 != enemy && projectile is RocketProjectile)
@@ -28,4 +38,5 @@ public class ExplosionEffect : HitEffect
         }
         return false;
     }
+
 }

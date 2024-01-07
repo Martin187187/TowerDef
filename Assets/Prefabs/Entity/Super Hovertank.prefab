@@ -729,15 +729,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88b7f84dd64655d41aa88cc00e091633, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  initialEffects: []
+  effects: []
+  effectsRemoval: []
   hp: 30
   startHp: 30
   goal: {fileID: 0}
-  moveSpeed: 2
   enemyData: {fileID: 11400000, guid: a2371c8830bebfb409152ae8d7501d5d, type: 2}
   controller: {fileID: 0}
   rotator: {fileID: 8483816203533347216}
   heatCost: 50
-  damage: 10
+  effectCreator: {fileID: 1546962573769408751, guid: 2ece1699734947843a68c295b113b7b3, type: 3}
 --- !u!1001 &5332963809025968327
 PrefabInstance:
   m_ObjectHideFlags: 0

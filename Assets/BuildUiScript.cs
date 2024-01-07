@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,17 +13,25 @@ public class BuildUiScript : MonoBehaviour
     public Button auto;
     public Text money;
     public WorldController controller;
+    public EntityManager manager;
     void Start()
     {
+        manager = EntityManager.Instance;
+        manager.OnMoneyChanged += UpdateMoney;
+        spawner.OnRunningChange += UpdateRunning;
         button.onClick.AddListener(StartNextWave);
         auto.onClick.AddListener(Auto);
     }
 
     // Update is called once per frame
-    void Update()
+    void UpdateRunning()
     {
-        wave.SetActive(!spawner.isRunning);
-        money.text = controller.money.ToString();
+        wave.SetActive(!spawner.IsRunning);
+    }
+
+    void UpdateMoney()
+    {
+        money.text = manager.GetMoney().ToString();
     }
 
     public void StartNextWave()

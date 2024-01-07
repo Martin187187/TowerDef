@@ -2,8 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Entity : MonoBehaviour
+public abstract class Entity : Effector
 {
-    [SerializeField] public int hp = 30;
-     [SerializeField]public int startHp = 30;
+    public int hp = 30;
+    public int startHp = 30;
+
+    public void setStartHP()
+    {
+        startHp = hp;
+    }
+
+    
 }

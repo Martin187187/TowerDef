@@ -32,8 +32,11 @@ public class DynamicUIBuilder : MonoBehaviour
     public UIStateManager state;
 
     public WorldController controller;
+
+    public EntityManager manager;
     void Start()
     {
+        manager = EntityManager.Instance;
         mainPanel = new GameObject("MainPanel");
         mainPanel.transform.SetParent(parentPanel, false);
 
@@ -60,13 +63,13 @@ public class DynamicUIBuilder : MonoBehaviour
     private void OnSSButton()
     {
         int cost = targetTurret.CalculateCost();
-        int money = controller.GetMoney();
+        int money = manager.GetMoney();
         if (cost <= money)
         {
-            controller.SetMoney(money - cost);
+            manager.SetMoney(money - cost);
             targetTurret.upgraded++;
-            targetTurret.rotationSpeed += targetTurret.turretData.rotationSpeed * 0.1f;
-            ssText.text = "" + targetTurret.rotationSpeed;
+            targetTurret.IncreaseBaseRotationSpeed(targetTurret.turretData.rotationSpeed * 0.1f);
+            ssText.text = "" + targetTurret.CalculateRotationSpeed();
             setNames();
         }
     }
@@ -75,13 +78,13 @@ public class DynamicUIBuilder : MonoBehaviour
     {
 
         int cost = targetTurret.CalculateCost();
-        int money = controller.GetMoney();
+        int money = manager.GetMoney();
         if (cost <= money)
         {
-            controller.SetMoney(money - cost);
+            manager.SetMoney(money - cost);
             targetTurret.upgraded++;
-            targetTurret.range += targetTurret.turretData.attackRange * 0.2f;
-            rangeText.text = "" + targetTurret.range;
+            targetTurret.IncreaseBaseRange(targetTurret.turretData.attackRange * 0.2f);
+            rangeText.text = "" + targetTurret.CalculateRange();
             setNames();
         }
     }
@@ -90,13 +93,13 @@ public class DynamicUIBuilder : MonoBehaviour
     {
 
         int cost = targetTurret.CalculateCost();
-        int money = controller.GetMoney();
+        int money = manager.GetMoney();
         if (cost <= money)
         {
-            controller.SetMoney(money - cost);
+            manager.SetMoney(money - cost);
             targetTurret.upgraded++;
-            targetTurret.shootingInterval *= 0.95f;
-            asText.text = "" + targetTurret.shootingInterval;
+            targetTurret.MultiplyBaseAttackInterval(0.95f);
+            asText.text = "" + targetTurret.CalculateAttackInterval();
             setNames();
         }
     }
@@ -105,13 +108,13 @@ public class DynamicUIBuilder : MonoBehaviour
     {
 
         int cost = targetTurret.CalculateCost();
-        int money = controller.GetMoney();
+        int money = manager.GetMoney();
         if (cost <= money)
         {
-            controller.SetMoney(money - cost);
+            manager.SetMoney(money - cost);
             targetTurret.upgraded++;
-            targetTurret.attack += (int)(targetTurret.turretData.attackDamage * 0.5);
-            attackText.text = "" + targetTurret.attack;
+            targetTurret.IncreaseBaseAttackDamage((int)(targetTurret.turretData.attackDamage * 0.5));
+            attackText.text = "" + targetTurret.CalculateAttackDamage();
             setNames();
         }
     }
@@ -130,14 +133,14 @@ public class DynamicUIBuilder : MonoBehaviour
 
     public void Recalculate()
     {
-        List<HitEffect> names = targetTurret.effectList;
+        List<AbstractEffect> names = targetTurret.GetEffectList();
         Destroy(mainPanel);
 
         mainPanel = new GameObject("MainPanel");
         mainPanel.transform.SetParent(parentPanel, false);
         // Create the main panel
         RectTransform mainPanelRect = mainPanel.AddComponent<RectTransform>();
-        mainPanelRect.localPosition = new Vector2(-180+ 26.84f, -(buttonHeight + 5) / 2 * names.Count - 380);
+        mainPanelRect.localPosition = new Vector2(-180 + 26.84f, -(buttonHeight + 5) / 2 * names.Count - 380);
         mainPanelRect.sizeDelta = new Vector2(buttonWidth, (buttonHeight + 5) * names.Count);
         // Set up vertical layout group for the main panel
         VerticalLayoutGroup verticalLayout = mainPanel.AddComponent<VerticalLayoutGroup>();
@@ -163,6 +166,11 @@ public class DynamicUIBuilder : MonoBehaviour
             buttonComponent.onClick.AddListener(() => OnButtonClick(name));
         }
         setNames();
+
+        attackText.text = "" + targetTurret.CalculateAttackDamage();
+        asText.text = "" + targetTurret.CalculateAttackInterval();
+        ssText.text = "" + targetTurret.CalculateRotationSpeed();
+        rangeText.text = "" + targetTurret.CalculateRange();
     }
 
     void Update()
@@ -196,10 +204,10 @@ public class DynamicUIBuilder : MonoBehaviour
 
                     targetTurret = turret;
                     Recalculate();
-                    attackText.text = "" + turret.attack;
-                    asText.text = "" + turret.shootingInterval;
-                    ssText.text = "" + turret.rotationSpeed;
-                    rangeText.text = "" + turret.range;
+                    attackText.text = "" + turret.CalculateAttackDamage();
+                    asText.text = "" + turret.CalculateAttackInterval();
+                    ssText.text = "" + turret.CalculateRotationSpeed();
+                    rangeText.text = "" + turret.CalculateRange();
                     dropdown.value = (int)targetTurret.strategy;
                 }
             }
@@ -211,11 +219,11 @@ public class DynamicUIBuilder : MonoBehaviour
         }
     }
 
-    void OnButtonClick(HitEffect effect)
+    void OnButtonClick(AbstractEffect effect)
     {
-        targetTurret.effectList.Remove(effect);
+        targetTurret.RemoveEffect(effect);
+        manager.AddEffect(effect);
         Recalculate();
-        bag.names.Add(effect);
         bag.Recalculate();
     }
 }

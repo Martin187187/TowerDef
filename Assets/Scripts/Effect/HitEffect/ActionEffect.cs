@@ -1,7 +1,18 @@
+using System;
 using UnityEngine;
 
-public abstract class ActionEffect<T> : MonoBehaviour where T : Effector{
+public abstract class ActionEffect : AbstractEffect, IComparable{
     
-    public abstract bool OnHitEffect(T effected);
-    public abstract void UpdateEffect();
+    public int callingLevel;
+
+    public int CompareTo(object obj)
+    {
+        if (obj == null || !(obj is ActionEffect))
+        {
+            return 1; // Consider null greater than any non-null object
+        }
+        return callingLevel.CompareTo(((ActionEffect)obj).callingLevel);
+    }
+
+    public abstract bool OnHitEffect(Effector originEffector, Effector effected);
 }

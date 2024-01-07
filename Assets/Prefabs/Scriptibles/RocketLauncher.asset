@@ -12,7 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b20a71663aaaa14cb134dcfda2197fe, type: 3}
   m_Name: RocketLauncher
   m_EditorClassIdentifier: 
-  attackDamage: 100
-  shootingInterval: 4
+  attackDamage: 1000
+  shootingInterval: 3
   rotationSpeed: 120
   attackRange: 9
+  cooldownTime: 1
+  upgradeCost: 50
+  turrestCost: 500

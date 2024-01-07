@@ -44,5 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90c92b6393c89804ab32dbb1fa51149c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selfDestructTime: 10
-  effectParentInterval: 3
+  isUserInteractible: 1
+  effectName: 
+  description: 
+  modificationStat: 1
+  slowRatio: 0.8

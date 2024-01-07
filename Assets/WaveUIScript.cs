@@ -44,7 +44,7 @@ namespace TowerDefense.UI.HUD
 		{
 			waveFillImage.fillAmount = (float)spawner.enemiesSpawned / spawner.GetWaveSize();
 			UpdateDisplay();
-			wave.SetActive(spawner.isRunning);
+			wave.SetActive(spawner.IsRunning);
 		}
 
 
