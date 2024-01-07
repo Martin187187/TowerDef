@@ -119,6 +119,17 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &102172567 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5142834250011623424, guid: 9fe14ccb174947046806953936fe31b5, type: 3}
+  m_PrefabInstance: {fileID: 2031571873}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b5fb1d492cdb654f81ccc2e668e3b01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &135786549
 GameObject:
   m_ObjectHideFlags: 0
@@ -11897,6 +11908,8 @@ MonoBehaviour:
   rangeButton: {fileID: 1994135275}
   closeButton: {fileID: 1651288734}
   dropdown: {fileID: 897129819}
+  zone: {fileID: 102172567}
+  zoneBag: {fileID: 1246264757}
 --- !u!1 &2071896071
 GameObject:
   m_ObjectHideFlags: 0
