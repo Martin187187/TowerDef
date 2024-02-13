@@ -9,13 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8b20a71663aaaa14cb134dcfda2197fe, type: 3}
-  m_Name: Laser
+  m_Script: {fileID: 11500000, guid: 1c9376d26f76b5148b1cb9a3bfe97438, type: 3}
+  m_Name: EffectState
   m_EditorClassIdentifier: 
-  attackDamage: 300
-  shootingInterval: 2
-  rotationSpeed: 90
-  attackRange: 9
-  cooldownTime: 0.5
-  upgradeCost: 50
-  turrestCost: 400
+  effectList:
+  - {fileID: 0}
+  - {fileID: 0}

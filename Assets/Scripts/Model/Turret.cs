@@ -25,8 +25,8 @@ public class Turret : Effector
     private int attack;
     private float rotationSpeed;
     [HideInInspector] public float neededCooldown = 0.5f;
-    [HideInInspector] public int cost = 100;
-    [HideInInspector] public int baseCost = 100;
+     public int cost = 100;
+     public int baseCost = 100;
 
     public float angleTolerance = 1f;
 

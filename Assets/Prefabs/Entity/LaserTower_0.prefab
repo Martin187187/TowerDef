@@ -19405,11 +19405,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18e5cb22cb0b211429667fcb24387129, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialEffects:
-  - {fileID: 8219073364644733442, guid: 0db904bc1fc1c964c81dd97e4767a5e9, type: 3}
-  - {fileID: 5586659105257982831, guid: cad25ab5ff99fb741ad563fc75e5728b, type: 3}
-  - {fileID: 420968998610380614, guid: 32aaa292ac8eb1d4aa15524d9343b72d, type: 3}
-  - {fileID: 4621364486510453340, guid: 48579ead56d227b4aabcb1b173b4deac, type: 3}
+  initialEffects: []
   effectsRemoval: []
   target: {fileID: 0}
   projectilePrefab: {fileID: 6155743070779583150, guid: 337daa90a0f10fc44b97d66dcf0527b6, type: 3}
@@ -19418,8 +19414,8 @@ MonoBehaviour:
   rotator: {fileID: 1980684451866027883}
   firingPoint: {fileID: 8676708780540533070}
   neededCooldown: 0.5
-  cost: 100
-  baseCost: 100
+  cost: 50
+  baseCost: 400
   angleTolerance: 5
   turretData: {fileID: 11400000, guid: 67c97291192e5b149bd6760bacf66ea9, type: 2}
   stayOnTarget: 0

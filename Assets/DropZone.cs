@@ -18,7 +18,6 @@ public class DropZone : MonoBehaviour, IDropHandler
     public void OnDrop(PointerEventData eventData)
     {
         DraggableItem draggableItem = eventData.pointerDrag.GetComponent<DraggableItem>();
-
         if (draggableItem != null)
         {
             if (isBag)
